@@ -1,5 +1,5 @@
 domain: my.domain
-repo: github.com/metal3-io/networkbinding-operator
+repo: github.com/metal3-io/networkconfiguration-operator
 resources:
 - group: metal3.io
   kind: NetworkBinding

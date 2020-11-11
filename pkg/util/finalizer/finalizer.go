@@ -3,7 +3,7 @@ package finalizer
 import (
 	"errors"
 
-	"github.com/metal3-io/networkbinding-operator/pkg/util/stringslice"
+	"github.com/metal3-io/networkconfiguration-operator/pkg/util/stringslice"
 )
 
 type hookType func(interface{}) error

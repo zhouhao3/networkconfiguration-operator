@@ -1,7 +1,7 @@
 package device
 
 import (
-	"github.com/metal3-io/networkbinding-operator/api/v1alpha1"
+	"github.com/metal3-io/networkconfiguration-operator/api/v1alpha1"
 	"sigs.k8s.io/controller-runtime/pkg/client"
 )
 

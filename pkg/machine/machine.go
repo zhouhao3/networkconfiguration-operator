@@ -1,7 +1,7 @@
 package machine
 
 import (
-	"github.com/metal3-io/networkbinding-operator/api/v1alpha1"
+	"github.com/metal3-io/networkconfiguration-operator/api/v1alpha1"
 	ctrl "sigs.k8s.io/controller-runtime"
 	"sigs.k8s.io/controller-runtime/pkg/client"
 )

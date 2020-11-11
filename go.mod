@@ -1,4 +1,4 @@
-module github.com/metal3-io/networkbinding-operator
+module github.com/metal3-io/networkconfiguration-operator
 
 go 1.13
 

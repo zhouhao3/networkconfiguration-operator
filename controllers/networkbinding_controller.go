@@ -25,9 +25,9 @@ import (
 	"sigs.k8s.io/controller-runtime/pkg/client"
 	"sigs.k8s.io/controller-runtime/pkg/reconcile"
 
-	"github.com/metal3-io/networkbinding-operator/api/v1alpha1"
-	"github.com/metal3-io/networkbinding-operator/pkg/machine"
-	"github.com/metal3-io/networkbinding-operator/pkg/util/finalizer"
+	"github.com/metal3-io/networkconfiguration-operator/api/v1alpha1"
+	"github.com/metal3-io/networkconfiguration-operator/pkg/machine"
+	"github.com/metal3-io/networkconfiguration-operator/pkg/util/finalizer"
 )
 
 const finalizerKey string = "metal3.io.v1alpha1"
