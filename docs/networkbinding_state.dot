@@ -1,0 +1,19 @@
+digraph NetworkBinding {
+    Created [shape=house]
+    Created -> Configuring
+
+    Configuring -> Configured
+    Configuring -> ConfigureFailed
+    Configuring -> Deleting1 [label="!DeletionTimestamp.IsZero()"]
+
+    Deleting1 [shape=point]
+
+    Configured -> Deleting2 [label="!DeletionTimestamp.IsZero()"]
+
+    Deleting2 [shape=point]
+
+    ConfigureFailed -> Configuring
+    ConfigureFailed -> Deleting [label="!DeletionTimestamp.IsZero()"]
+
+    Deleting [shape=doublecircle]
+}
