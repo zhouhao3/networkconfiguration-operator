@@ -1,0 +1,68 @@
+
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRole
+metadata:
+  creationTimestamp: null
+  name: manager-role
+rules:
+- apiGroups:
+  - metal3.io.my.domain
+  resources:
+  - networkbindings
+  verbs:
+  - create
+  - delete
+  - get
+  - list
+  - patch
+  - update
+  - watch
+- apiGroups:
+  - metal3.io.my.domain
+  resources:
+  - networkbindings/status
+  verbs:
+  - get
+  - patch
+  - update
+- apiGroups:
+  - metal3.io.my.domain
+  resources:
+  - networkconfigurations
+  verbs:
+  - create
+  - delete
+  - get
+  - list
+  - patch
+  - update
+  - watch
+- apiGroups:
+  - metal3.io.my.domain
+  resources:
+  - networkconfigurations/status
+  verbs:
+  - get
+  - patch
+  - update
+- apiGroups:
+  - metal3.io.my.domain
+  resources:
+  - switches
+  verbs:
+  - create
+  - delete
+  - get
+  - list
+  - patch
+  - update
+  - watch
+- apiGroups:
+  - metal3.io.my.domain
+  resources:
+  - switches/status
+  verbs:
+  - get
+  - patch
+  - update
