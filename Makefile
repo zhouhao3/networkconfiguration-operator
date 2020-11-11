@@ -16,11 +16,11 @@ GOBIN=$(shell go env GOBIN)
 endif
 
 # Build manager binary
-build: test
+build: generate
 	go build -o bin/manager main.go
 
 # Run against the configured Kubernetes cluster in ~/.kube/config
-run: test
+run: generate
 	go run ./main.go
 
 # Build the docker image

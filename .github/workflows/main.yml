@@ -11,17 +11,15 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v2
-      - name: test
-        run: make test
+      - name: fmt
+        run: make fmt
+      - name: vet
+        run: make vet
+      - name: unit
+        run: make unit
   build:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v2
       - name: build
         run: make build
-  docker:
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v2
-      - name: docker
-        run: make docker
