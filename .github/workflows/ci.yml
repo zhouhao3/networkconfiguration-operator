@@ -4,37 +4,23 @@ on:
   push:
     branchs:
     - master
-  pull_request: {}
+  pull_request:
+    branchs:
+    - master
 
 jobs:
-  fmt:
+  test:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v2
       - name: fmt
         run: make fmt
-  lint:
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v2
       - name: lint
         run: make lint
-  vet:
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v2
       - name: vet
         run: make vet
-  sec:
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v2
       - name: sec
         run: make sec
-  unit:
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v2
       - name: unit
         run: make unit
   build:
