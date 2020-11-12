@@ -17,6 +17,8 @@ jobs:
         run: make lint
       - name: vet
         run: make vet
+      - name: sec
+        run: make sec
       - name: unit
         run: make unit
   build:

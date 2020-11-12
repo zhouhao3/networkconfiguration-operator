@@ -5,6 +5,6 @@ set -u
 result=$(./tools/golint ./...)
 
 if [ "$result" != "" ];then
-    echo $result
+    echo "$result"
     exit 1
 fi

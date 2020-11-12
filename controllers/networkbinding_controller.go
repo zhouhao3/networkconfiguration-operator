@@ -79,9 +79,9 @@ func (r *NetworkBindingReconciler) Reconcile(req ctrl.Request) (ctrl.Result, err
 	// On object created
 	case instance.DeletionTimestamp.IsZero() && len(instance.Finalizers) == 0:
 		// Add finalizer
-		finalizer.AddFinalizer(&instance.Finalizers, finalizerKey)
+		err = finalizer.AddFinalizer(&instance.Finalizers, finalizerKey)
 		// Do something
-		m.Reconcile()
+		_, _ = m.Reconcile()
 	// On object updated
 	case instance.DeletionTimestamp.IsZero() && len(instance.Finalizers) != 0:
 		// Do something

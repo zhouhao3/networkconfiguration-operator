@@ -3,6 +3,7 @@ CONTROLLER_GEN=./tools/controller-gen
 DOT= ./tools/dot
 LINT= ./hack/lint.sh
 FMT= ./hack/fmt.sh
+SEC= ./hack/sec.sh
 
 # Image URL to use all building/pushing image targets
 IMG ?= controller:latest
@@ -60,7 +61,7 @@ docs: $(patsubst %.dot,%.png,$(wildcard docs/*.dot))
 	$(DOT) -Tpng $< >$@
 
 # Run tests
-test: generate fmt lint vet unit manifests
+test: generate fmt lint vet sec unit manifests
 
 # Run go fmt against code
 fmt:
@@ -73,6 +74,10 @@ lint:
 # Run go vet against code
 vet:
 	go vet ./...
+
+# Run go sec against code
+sec:
+	$(SEC)
 
 # Run go test against code
 unit:
