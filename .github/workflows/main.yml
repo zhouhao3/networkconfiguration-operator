@@ -2,7 +2,8 @@ name: CI
 
 on:
   push:
-    branches: [ master ]
+    branchs:
+    - master
   pull_request: {}
 
 jobs:
