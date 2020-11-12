@@ -89,3 +89,8 @@ clean:
 	rm -f ./cover.out
 	rm -f ./coverage.html
 	rm -f ./bin/*
+
+# Clean up go module settings
+mod:
+	go mod tidy
+	go mod verify
