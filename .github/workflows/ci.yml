@@ -20,7 +20,7 @@ jobs:
       - name: sec
         run: make sec
       - name: unit
-        run: make unit
+        run: ./hack/installKubebuilder.sh && make unit
   build:
     runs-on: ubuntu-latest
     steps:
