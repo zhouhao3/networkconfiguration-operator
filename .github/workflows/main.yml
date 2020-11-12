@@ -13,6 +13,8 @@ jobs:
       - uses: actions/checkout@v2
       - name: fmt
         run: make fmt
+      - name: lint
+        run: make lint
       - name: vet
         run: make vet
       - name: unit
