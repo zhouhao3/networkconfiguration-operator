@@ -37,14 +37,79 @@ spec:
           spec:
             description: NetworkConfigurationSpec defines the desired state of NetworkConfiguration
             properties:
-              foo:
-                description: Foo is an example field of NetworkConfiguration. Edit
-                  NetworkConfiguration_types.go to remove/update
+              acls:
+                items:
+                  description: ACL ...
+                  properties:
+                    action:
+                      enum:
+                      - allow
+                      - deny
+                      type: string
+                    des:
+                      type: string
+                    desPortRange:
+                      pattern: ([0-9]{1,})|([0-9]{1,}-[0-9]{1,})(,([0-9]{1,})|([0-9]{1,}-[0-9]{1,}))*
+                      type: string
+                    protocol:
+                      enum:
+                      - TCP
+                      - UDP
+                      - ICMP
+                      - ALL
+                      type: string
+                    src:
+                      type: string
+                    srcPortRange:
+                      pattern: ([0-9]{1,})|([0-9]{1,}-[0-9]{1,})(,([0-9]{1,})|([0-9]{1,}-[0-9]{1,}))*
+                      type: string
+                    type:
+                      enum:
+                      - ipv4
+                      - ipv6
+                      type: string
+                  type: object
+                maxItems: 10
+                type: array
+              linkAggregationType:
+                enum:
+                - lag
+                - mlag
                 type: string
+              nicHint:
+                description: NICHint ...
+                properties:
+                  smartNIC:
+                    type: boolean
+                  speed:
+                    type: string
+                type: object
+              untaggedVLAN:
+                type: string
+              vlans:
+                items:
+                  type: string
+                maxItems: 3
+                type: array
             type: object
           status:
             description: NetworkConfigurationStatus defines the observed state of
               NetworkConfiguration
+            properties:
+              networkBindingRefs:
+                items:
+                  description: NetworkBindingRef is the reference for NetworkBinding
+                    CR
+                  properties:
+                    name:
+                      type: string
+                    nameSpace:
+                      type: string
+                  required:
+                  - name
+                  - nameSpace
+                  type: object
+                type: array
             type: object
         type: object
     served: true

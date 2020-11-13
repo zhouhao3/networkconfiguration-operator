@@ -46,15 +46,43 @@ type NetworkConfiguration struct {
 
 // NetworkConfigurationSpec defines the desired state of NetworkConfiguration
 type NetworkConfigurationSpec struct {
-	// INSERT ADDITIONAL SPEC FIELDS - desired state of cluster
-	// Important: Run "make" to regenerate code after modifying this file
+	// +kubebuilder:validation:MaxItems=10
+	ACLs []ACL `json:"acls,omitempty"`
 
-	// Foo is an example field of NetworkConfiguration. Edit NetworkConfiguration_types.go to remove/update
-	Foo string `json:"foo,omitempty"`
+	// +kubebuilder:validation:MaxItems=3
+	Vlans []string `json:"vlans,omitempty"`
+
+	UntaggedVLAN string `json:"untaggedVLAN,omitempty"`
+
+	// +kubebuilder:validation:Enum="lag";"mlag"
+	LinkAggregationType string `json:"linkAggregationType,omitempty"`
+
+	NICHint NICHint `json:"nicHint,omitempty"`
+}
+
+// ACL ...
+type ACL struct {
+	// +kubebuilder:validation:Enum="ipv4";"ipv6"
+	Type string `json:"type,omitempty"`
+
+	// +kubebuilder:validation:Enum="allow";"deny"
+	Action string `json:"action,omitempty"`
+
+	// +kubebuilder:validation:Enum="TCP";"UDP";"ICMP";"ALL"
+	Protocol string `json:"protocol,omitempty"`
+
+	Src string `json:"src,omitempty"`
+
+	// +kubebuilder:validation:Pattern=`([0-9]{1,})|([0-9]{1,}-[0-9]{1,})(,([0-9]{1,})|([0-9]{1,}-[0-9]{1,}))*`
+	SrcPortRange string `json:"srcPortRange,omitempty"`
+
+	Des string `json:"des,omitempty"`
+
+	// +kubebuilder:validation:Pattern=`([0-9]{1,})|([0-9]{1,}-[0-9]{1,})(,([0-9]{1,})|([0-9]{1,}-[0-9]{1,}))*`
+	DesPortRange string `json:"desPortRange,omitempty"`
 }
 
 // NetworkConfigurationStatus defines the observed state of NetworkConfiguration
 type NetworkConfigurationStatus struct {
-	// INSERT ADDITIONAL STATUS FIELD - define observed state of cluster
-	// Important: Run "make" to regenerate code after modifying this file
+	NetworkBindingRefs []NetworkBindingRef `json:"networkBindingRefs,omitempty"`
 }
