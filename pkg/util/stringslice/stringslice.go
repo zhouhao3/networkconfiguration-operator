@@ -1,6 +1,6 @@
 package stringslice
 
-// Contains ...
+// Contains check the slice contains str or not, if exist return true, else return false.
 func Contains(slice []string, str string) bool {
 	for _, value := range slice {
 		if value == str {
@@ -10,7 +10,7 @@ func Contains(slice []string, str string) bool {
 	return false
 }
 
-// Delete ...
+// Delete str from slice, if success return true, else return false.
 func Delete(slice *[]string, str string) bool {
 	for i := 0; i < len(*slice); i++ {
 		if (*slice)[i] == str {
