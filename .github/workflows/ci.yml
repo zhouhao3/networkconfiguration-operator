@@ -11,20 +11,20 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v2
-      - name: fmt
-        run: make fmt
-      - name: lint
-        run: make lint
-      - name: vet
-        run: make vet
-      - name: sec
-        run: make sec
+      - name: gofmt
+        run: make gofmt
+      - name: golint
+        run: make golint
+      - name: govet
+        run: make govet
+      - name: gosec
+        run: make gosec
       - name: generate
         run: make generate
       - name: manifests
         run: make manifests
       - name: unit
-        run: ./hack/installKubebuilder.sh && make unit
+        run: ./hack/installkubebuilder.sh && make unit
   build:
     runs-on: ubuntu-latest
     steps:

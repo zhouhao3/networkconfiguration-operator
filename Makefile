@@ -1,9 +1,9 @@
 KUSTOMIZE=./tools/kustomize
 CONTROLLER_GEN=./tools/controller-gen
 DOT= ./tools/dot
-LINT= ./hack/lint.sh
-FMT= ./hack/fmt.sh
-SEC= ./hack/sec.sh
+GOLINT= ./hack/golint.sh
+GOFMT= ./hack/gofmt.sh
+GOSEC= ./hack/gosec.sh
 
 # Image URL to use all building/pushing image targets
 IMG ?= controller:latest
@@ -61,23 +61,23 @@ docs: $(patsubst %.dot,%.png,$(wildcard docs/*.dot))
 	$(DOT) -Tpng $< >$@
 
 # Run tests
-test: generate fmt lint vet sec unit manifests
+test: generate gofmt golint govet gosec unit manifests
 
 # Run go fmt against code
-fmt:
-	$(FMT)
+gofmt:
+	$(GOFMT)
 
 # Run go lint against code
-lint:
-	$(LINT)
+golint:
+	$(GOLINT)
 
 # Run go vet against code
-vet:
+govet:
 	go vet ./...
 
 # Run go sec against code
-sec:
-	$(SEC)
+gosec:
+	$(GOSEC)
 
 # Run go test against code
 unit:
