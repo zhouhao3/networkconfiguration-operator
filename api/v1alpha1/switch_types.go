@@ -46,10 +46,20 @@ type Switch struct {
 
 // SwitchSpec defines the desired state of Switch
 type SwitchSpec struct {
-	// Foo is an example field of Switch. Edit Switch_types.go to remove/update
-	Foo string `json:"foo,omitempty"`
+	OS  string `json:"os"`
+	IP  string `json:"ip"`
+	MAC string `json:"mac"`
+}
+
+// SwitchPort ...
+type SwitchPort struct {
+	PortID                  string                  `json:"portID,omitempty"`
+	NetworkConfiguration    *NetworkConfiguration   `json:"networkConfiguration,omitempty"`
+	NetworkConfigurationRef NetworkConfigurationRef `json:"networkConfigurationRef,omitempty"`
+	LagWith                 Port                    `json:"lagWith,omitempty"`
 }
 
 // SwitchStatus defines the observed state of Switch
 type SwitchStatus struct {
+	Ports []SwitchPort `json:"ports,omitempty"`
 }

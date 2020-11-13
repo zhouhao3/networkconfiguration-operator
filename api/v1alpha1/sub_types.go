@@ -66,7 +66,6 @@ type DeviceRef struct {
 
 // Fetch the instance
 func (d *DeviceRef) Fetch(client *client.Client) (interface{}, error) {
-
 	switch d.Kind {
 	case "Switch":
 		var instance Switch
@@ -85,6 +84,12 @@ func (d *DeviceRef) Fetch(client *client.Client) (interface{}, error) {
 	}
 
 	return nil, errors.New("")
+}
+
+// Port ...
+type Port struct {
+	PortID    string    `json:"portID"`
+	DeviceRef DeviceRef `json:"deviceRef"`
 }
 
 // NICHint ...
