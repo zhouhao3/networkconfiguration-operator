@@ -1,14 +1,15 @@
 package machine
 
 import (
+	"context"
 	"testing"
 
 	"github.com/metal3-io/networkconfiguration-operator/api/v1alpha1"
 	ctrl "sigs.k8s.io/controller-runtime"
-	"sigs.k8s.io/controller-runtime/pkg/client"
 )
 
 type testInstance struct {
+	out   string
 	state v1alpha1.StateType
 }
 
@@ -20,29 +21,25 @@ func (t *testInstance) SetState(state v1alpha1.StateType) {
 	t.state = state
 }
 
-var out string
-
-func handlerTest0(client *client.Client, instance interface{}) (nextState v1alpha1.StateType, result ctrl.Result, err error) {
-	out = "Hello"
+func handlerTest0(ctx context.Context, info *Information, instance interface{}) (nextState v1alpha1.StateType, result ctrl.Result, err error) {
+	instance.(*testInstance).out = "Hello"
 	return "test1", ctrl.Result{}, nil
 }
 
-func handlerTest1(client *client.Client, instance interface{}) (nextState v1alpha1.StateType, result ctrl.Result, err error) {
-	out += " world"
+func handlerTest1(ctx context.Context, info *Information, instance interface{}) (nextState v1alpha1.StateType, result ctrl.Result, err error) {
+	instance.(*testInstance).out += " world"
 	return "test2", ctrl.Result{}, nil
 }
 
-func handlerTest2(client *client.Client, instance interface{}) (nextState v1alpha1.StateType, result ctrl.Result, err error) {
-	out += "!"
+func handlerTest2(ctx context.Context, info *Information, instance interface{}) (nextState v1alpha1.StateType, result ctrl.Result, err error) {
+	instance.(*testInstance).out += "!"
 	return "", ctrl.Result{}, nil
 }
 
 func TestMachine(t *testing.T) {
-	defer func() {
-		out = ""
-	}()
 	var instance testInstance
 	m := New(
+		context.TODO(),
 		nil,
 		&instance,
 		&Handlers{
@@ -52,15 +49,15 @@ func TestMachine(t *testing.T) {
 		},
 	)
 	m.Reconcile()
-	if out != "Hello" {
-		t.Fatal(out)
+	if instance.out != "Hello" {
+		t.Fatal(instance.out)
 	}
 	m.Reconcile()
-	if out != "Hello world" {
-		t.Fatal(out)
+	if instance.out != "Hello world" {
+		t.Fatal(instance.out)
 	}
 	m.Reconcile()
-	if out != "Hello world!" {
-		t.Fatal(out)
+	if instance.out != "Hello world!" {
+		t.Fatal(instance.out)
 	}
 }
