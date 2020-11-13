@@ -8,6 +8,9 @@ import (
 	"sigs.k8s.io/controller-runtime/pkg/client"
 )
 
+// StateType is the type of .status.state
+type StateType string
+
 // NetworkConfigurationRef is the reference for NetworkConfiguration CR
 type NetworkConfigurationRef struct {
 	Name      string `json:"name"`
@@ -17,6 +20,29 @@ type NetworkConfigurationRef struct {
 // Fetch the instance
 func (n *NetworkConfigurationRef) Fetch(client client.Client) (*NetworkConfiguration, error) {
 	var instance NetworkConfiguration
+	err := client.Get(
+		context.Background(),
+		types.NamespacedName{
+			Name:      n.Name,
+			Namespace: n.NameSpace,
+		},
+		&instance,
+	)
+	if err != nil {
+		return nil, err
+	}
+	return &instance, nil
+}
+
+// NetworkBindingRef is the reference for NetworkBinding CR
+type NetworkBindingRef struct {
+	Name      string `json:"name"`
+	NameSpace string `json:"nameSpace"`
+}
+
+// Fetch the instance
+func (n *NetworkBindingRef) Fetch(client client.Client) (*NetworkBinding, error) {
+	var instance NetworkBinding
 	err := client.Get(
 		context.Background(),
 		types.NamespacedName{
@@ -61,5 +87,8 @@ func (d *DeviceRef) Fetch(client *client.Client) (interface{}, error) {
 	return nil, errors.New("")
 }
 
-// StateType is the type of .status.state
-type StateType string
+// NICHint ...
+type NICHint struct {
+	Speed    string `json:"speed,omitempty"`
+	SmartNIC bool   `json:"smartNIC,omitempty"`
+}
