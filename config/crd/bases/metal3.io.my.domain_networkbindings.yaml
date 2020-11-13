@@ -52,8 +52,7 @@ spec:
                 description: If the length of ports isn't 1, it means we need do link
                   aggregation for this ports.
                 items:
-                  description: NetworkBindingPort describes which port and Device
-                    need be configure
+                  description: Port ...
                   properties:
                     deviceRef:
                       description: DeviceRef is the reference for Device CR

@@ -51,13 +51,7 @@ type NetworkBindingSpec struct {
 	// If the length of ports isn't 1,
 	// it means we need do link aggregation for this ports.
 	// +kubebuilder:validation:MaxItems=2
-	Ports []NetworkBindingPort `json:"ports"`
-}
-
-// NetworkBindingPort describes which port and Device need be configure
-type NetworkBindingPort struct {
-	PortID    string    `json:"portID"`
-	DeviceRef DeviceRef `json:"deviceRef"`
+	Ports []Port `json:"ports"`
 }
 
 // NetworkBindingStatus defines the observed state of NetworkBinding
