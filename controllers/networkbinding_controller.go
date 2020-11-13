@@ -63,7 +63,11 @@ func (r *NetworkBindingReconciler) Reconcile(req ctrl.Request) (ctrl.Result, err
 	}
 
 	m := machine.New(
-		&r.Client,
+		context.TODO(),
+		&machine.Information{
+			Client: &r.Client,
+			Logger: &r.Log,
+		},
 		instance,
 		&machine.Handlers{
 			v1alpha1.NetworkBindingNone:            r.NoneHandler,
@@ -99,7 +103,7 @@ func (r *NetworkBindingReconciler) Reconcile(req ctrl.Request) (ctrl.Result, err
 }
 
 // NoneHandler ...
-func (r *NetworkBindingReconciler) NoneHandler(client *client.Client, instance interface{}) (nextState v1alpha1.StateType, result ctrl.Result, err error) {
+func (r *NetworkBindingReconciler) NoneHandler(ctx context.Context, info *machine.Information, instance interface{}) (nextState v1alpha1.StateType, result ctrl.Result, err error) {
 	_ = instance.(*v1alpha1.NetworkBinding)
 
 	// Set Network Configure
@@ -107,7 +111,7 @@ func (r *NetworkBindingReconciler) NoneHandler(client *client.Client, instance i
 }
 
 // CreateHandler ...
-func (r *NetworkBindingReconciler) CreateHandler(client *client.Client, instance interface{}) (nextState v1alpha1.StateType, result ctrl.Result, err error) {
+func (r *NetworkBindingReconciler) CreateHandler(ctx context.Context, info *machine.Information, instance interface{}) (nextState v1alpha1.StateType, result ctrl.Result, err error) {
 	_ = instance.(*v1alpha1.NetworkBinding)
 
 	// Set Network Configure
@@ -115,21 +119,21 @@ func (r *NetworkBindingReconciler) CreateHandler(client *client.Client, instance
 }
 
 // ConfiguringHandler ...
-func (r *NetworkBindingReconciler) ConfiguringHandler(client *client.Client, instance interface{}) (nextState v1alpha1.StateType, result ctrl.Result, err error) {
+func (r *NetworkBindingReconciler) ConfiguringHandler(ctx context.Context, info *machine.Information, instance interface{}) (nextState v1alpha1.StateType, result ctrl.Result, err error) {
 	_ = instance.(*v1alpha1.NetworkBinding)
 
 	return v1alpha1.NetworkBindingConfigured, ctrl.Result{}, nil
 }
 
 // ConfiguredHandler ...
-func (r *NetworkBindingReconciler) ConfiguredHandler(client *client.Client, instance interface{}) (nextState v1alpha1.StateType, result ctrl.Result, err error) {
+func (r *NetworkBindingReconciler) ConfiguredHandler(ctx context.Context, info *machine.Information, instance interface{}) (nextState v1alpha1.StateType, result ctrl.Result, err error) {
 	_ = instance.(*v1alpha1.NetworkBinding)
 
 	return v1alpha1.NetworkBindingDeleting, ctrl.Result{RequeueAfter: 10}, nil
 }
 
 // ConfigureFailedHandler ...
-func (r *NetworkBindingReconciler) ConfigureFailedHandler(client *client.Client, instance interface{}) (nextState v1alpha1.StateType, result ctrl.Result, err error) {
+func (r *NetworkBindingReconciler) ConfigureFailedHandler(ctx context.Context, info *machine.Information, instance interface{}) (nextState v1alpha1.StateType, result ctrl.Result, err error) {
 	_ = instance.(*v1alpha1.NetworkBinding)
 
 	// 删除Device CR上的配置
@@ -139,7 +143,7 @@ func (r *NetworkBindingReconciler) ConfigureFailedHandler(client *client.Client,
 }
 
 // DeletingHandler ...
-func (r *NetworkBindingReconciler) DeletingHandler(client *client.Client, instance interface{}) (nextState v1alpha1.StateType, result ctrl.Result, err error) {
+func (r *NetworkBindingReconciler) DeletingHandler(ctx context.Context, info *machine.Information, instance interface{}) (nextState v1alpha1.StateType, result ctrl.Result, err error) {
 	_ = instance.(*v1alpha1.NetworkBinding)
 
 	return v1alpha1.NetworkBindingNone, ctrl.Result{}, nil

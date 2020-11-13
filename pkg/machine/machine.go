@@ -1,34 +1,45 @@
 package machine
 
 import (
+	"context"
+
+	"github.com/go-logr/logr"
 	"github.com/metal3-io/networkconfiguration-operator/api/v1alpha1"
 	ctrl "sigs.k8s.io/controller-runtime"
 	"sigs.k8s.io/controller-runtime/pkg/client"
 )
 
 // Handler ...
-type Handler func(client *client.Client, instance interface{}) (nextState v1alpha1.StateType, result ctrl.Result, err error)
+type Handler func(ctx context.Context, info *Information, instance interface{}) (nextState v1alpha1.StateType, result ctrl.Result, err error)
 
 // Handlers ...
 type Handlers map[v1alpha1.StateType]Handler
 
-// Object ...
-type Object interface {
+// Instance ...
+type Instance interface {
 	GetState() v1alpha1.StateType
 	SetState(state v1alpha1.StateType)
 }
 
+// Information ...
+type Information struct {
+	Client *client.Client
+	Logger *logr.Logger
+}
+
 // Machine ...
 type Machine struct {
-	client   *client.Client
-	instance Object
+	ctx      context.Context
+	info     *Information
+	instance Instance
 	handlers *Handlers
 }
 
 // New create state machine
-func New(client *client.Client, instance Object, handlers *Handlers) Machine {
+func New(ctx context.Context, info *Information, instance Instance, handlers *Handlers) Machine {
 	return Machine{
-		client:   client,
+		ctx:      ctx,
+		info:     info,
 		instance: instance,
 		handlers: handlers,
 	}
@@ -36,7 +47,7 @@ func New(client *client.Client, instance Object, handlers *Handlers) Machine {
 
 // Reconcile ...
 func (m *Machine) Reconcile() (ctrl.Result, error) {
-	nextState, result, err := (*m.handlers)[m.instance.GetState()](m.client, m.instance)
+	nextState, result, err := (*m.handlers)[m.instance.GetState()](m.ctx, m.info, m.instance)
 	m.instance.SetState(nextState)
 	return result, err
 }
