@@ -31,3 +31,9 @@ jobs:
       - uses: actions/checkout@v2
       - name: build
         run: make build
+  docker:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+      - name: docker
+        run: make docker

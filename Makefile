@@ -27,7 +27,8 @@ run: generate
 	go run ./main.go
 
 # Build the docker image
-docker: build
+docker: generate
+	CGO_ENABLED=0 GOOS=linux GOARCH=amd64 GO111MODULE=on go build -a -o bin/manager-docker main.go
 	docker rmi -f ${IMG}
 	docker build -f build/Dockerfile -t ${IMG} .
 	docker save -o ./bin/${IMG}.tar ${IMG}
