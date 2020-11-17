@@ -57,7 +57,7 @@ type NetworkConfigurationSpec struct {
 	// +kubebuilder:validation:Enum="lag";"mlag"
 	LinkAggregationType string `json:"linkAggregationType,omitempty"`
 
-	NICHint NICHint `json:"nicHint,omitempty"`
+	NICHint *NICHint `json:"nicHint,omitempty"`
 }
 
 // ACL ...
