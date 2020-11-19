@@ -134,7 +134,7 @@ func (r *NetworkBindingReconciler) ConfiguringHandler(ctx context.Context, info 
 // ConfiguredHandler ...
 func (r *NetworkBindingReconciler) ConfiguredHandler(ctx context.Context, info *machine.Information, instance interface{}) (v1alpha1.StateType, ctrl.Result, error) {
 	_ = instance.(*v1alpha1.NetworkBinding)
-	// Deleting network
+	// Delete network
 	return v1alpha1.NetworkBindingDeleting, ctrl.Result{Requeue: true}, nil
 }
 
@@ -149,5 +149,12 @@ func (r *NetworkBindingReconciler) ConfigureFailedHandler(ctx context.Context, i
 func (r *NetworkBindingReconciler) DeletingHandler(ctx context.Context, info *machine.Information, instance interface{}) (v1alpha1.StateType, ctrl.Result, error) {
 	_ = instance.(*v1alpha1.NetworkBinding)
 	// Check network has been deleted or not
-	return v1alpha1.NetworkBindingNone, ctrl.Result{Requeue: true}, nil
+	var deleteResutl string
+	switch deleteResutl {
+	case "success":
+		return v1alpha1.NetworkBindingNone, ctrl.Result{}, nil
+	case "failed":
+		// Delete network again
+	}
+	return v1alpha1.NetworkBindingDeleting, ctrl.Result{Requeue: true, RequeueAfter: time.Second * 10}, nil
 }
