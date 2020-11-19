@@ -2,6 +2,7 @@ package machine
 
 import (
 	"context"
+	"time"
 
 	"github.com/go-logr/logr"
 	"github.com/metal3-io/networkconfiguration-operator/api/v1alpha1"
@@ -23,19 +24,20 @@ type Instance interface {
 
 // Information ...
 type Information struct {
-	Client *client.Client
-	Logger *logr.Logger
+	Client client.Client
+	Logger logr.Logger
 }
 
 // Machine ...
 type Machine struct {
-	ctx      context.Context
-	info     *Information
-	instance Instance
-	handlers *Handlers
+	ctx          context.Context
+	info         *Information
+	instance     Instance
+	handlers     *Handlers
+	requeueAfter time.Duration
 }
 
-// New create state machine
+// New create state machine, the paramater of instance must be a pointer
 func New(ctx context.Context, info *Information, instance Instance, handlers *Handlers) Machine {
 	return Machine{
 		ctx:      ctx,
@@ -49,5 +51,6 @@ func New(ctx context.Context, info *Information, instance Instance, handlers *Ha
 func (m *Machine) Reconcile() (ctrl.Result, error) {
 	nextState, result, err := (*m.handlers)[m.instance.GetState()](m.ctx, m.info, m.instance)
 	m.instance.SetState(nextState)
+
 	return result, err
 }

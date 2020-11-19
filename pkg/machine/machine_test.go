@@ -21,17 +21,17 @@ func (t *testInstance) SetState(state v1alpha1.StateType) {
 	t.state = state
 }
 
-func handlerTest0(ctx context.Context, info *Information, instance interface{}) (nextState v1alpha1.StateType, result ctrl.Result, err error) {
+func handlerTest0(ctx context.Context, info *Information, instance interface{}) (v1alpha1.StateType, ctrl.Result, error) {
 	instance.(*testInstance).out = "Hello"
 	return "test1", ctrl.Result{}, nil
 }
 
-func handlerTest1(ctx context.Context, info *Information, instance interface{}) (nextState v1alpha1.StateType, result ctrl.Result, err error) {
+func handlerTest1(ctx context.Context, info *Information, instance interface{}) (v1alpha1.StateType, ctrl.Result, error) {
 	instance.(*testInstance).out += " world"
 	return "test2", ctrl.Result{}, nil
 }
 
-func handlerTest2(ctx context.Context, info *Information, instance interface{}) (nextState v1alpha1.StateType, result ctrl.Result, err error) {
+func handlerTest2(ctx context.Context, info *Information, instance interface{}) (v1alpha1.StateType, ctrl.Result, error) {
 	instance.(*testInstance).out += "!"
 	return "", ctrl.Result{}, nil
 }
@@ -82,17 +82,17 @@ func BenchmarkMachine(b *testing.B) {
 
 var tInstance testInstance
 
-func handlerTest00(ctx context.Context, info *Information, instance interface{}) (nextState v1alpha1.StateType, result ctrl.Result, err error) {
+func handlerTest00(ctx context.Context, info *Information, instance interface{}) (v1alpha1.StateType, ctrl.Result, error) {
 	tInstance.out = "Hello"
 	return "test1", ctrl.Result{}, nil
 }
 
-func handlerTest11(ctx context.Context, info *Information, instance interface{}) (nextState v1alpha1.StateType, result ctrl.Result, err error) {
+func handlerTest11(ctx context.Context, info *Information, instance interface{}) (v1alpha1.StateType, ctrl.Result, error) {
 	tInstance.out += " world"
 	return "test2", ctrl.Result{}, nil
 }
 
-func handlerTest22(ctx context.Context, info *Information, instance interface{}) (nextState v1alpha1.StateType, result ctrl.Result, err error) {
+func handlerTest22(ctx context.Context, info *Information, instance interface{}) (v1alpha1.StateType, ctrl.Result, error) {
 	tInstance.out += "!"
 	return "", ctrl.Result{}, nil
 }
