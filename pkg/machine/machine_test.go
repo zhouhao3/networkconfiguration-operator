@@ -61,3 +61,55 @@ func TestMachine(t *testing.T) {
 		t.Fatal(instance.out)
 	}
 }
+
+func BenchmarkMachine(b *testing.B) {
+	var instance testInstance
+	m := New(
+		context.TODO(),
+		nil,
+		&instance,
+		&Handlers{
+			"":      handlerTest0,
+			"test1": handlerTest1,
+			"test2": handlerTest2,
+		},
+	)
+	b.ResetTimer()
+	for i := 0; i < b.N; i++ {
+		m.Reconcile()
+	}
+}
+
+var tInstance testInstance
+
+func handlerTest00(ctx context.Context, info *Information, instance interface{}) (nextState v1alpha1.StateType, result ctrl.Result, err error) {
+	tInstance.out = "Hello"
+	return "test1", ctrl.Result{}, nil
+}
+
+func handlerTest11(ctx context.Context, info *Information, instance interface{}) (nextState v1alpha1.StateType, result ctrl.Result, err error) {
+	tInstance.out += " world"
+	return "test2", ctrl.Result{}, nil
+}
+
+func handlerTest22(ctx context.Context, info *Information, instance interface{}) (nextState v1alpha1.StateType, result ctrl.Result, err error) {
+	tInstance.out += "!"
+	return "", ctrl.Result{}, nil
+}
+
+func BenchmarkMachineNoAssert(b *testing.B) {
+	m := New(
+		context.TODO(),
+		nil,
+		&tInstance,
+		&Handlers{
+			"":      handlerTest00,
+			"test1": handlerTest11,
+			"test2": handlerTest22,
+		},
+	)
+	b.ResetTimer()
+	for i := 0; i < b.N; i++ {
+		m.Reconcile()
+	}
+}
