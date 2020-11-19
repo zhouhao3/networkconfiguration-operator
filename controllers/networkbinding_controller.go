@@ -18,6 +18,7 @@ package controllers
 
 import (
 	"context"
+	"time"
 
 	"github.com/go-logr/logr"
 	"k8s.io/apimachinery/pkg/runtime"
@@ -65,8 +66,8 @@ func (r *NetworkBindingReconciler) Reconcile(req ctrl.Request) (ctrl.Result, err
 	m := machine.New(
 		context.TODO(),
 		&machine.Information{
-			Client: &r.Client,
-			Logger: &r.Log,
+			Client: r.Client,
+			Logger: r.Log,
 		},
 		instance,
 		&machine.Handlers{
@@ -103,48 +104,50 @@ func (r *NetworkBindingReconciler) Reconcile(req ctrl.Request) (ctrl.Result, err
 }
 
 // NoneHandler ...
-func (r *NetworkBindingReconciler) NoneHandler(ctx context.Context, info *machine.Information, instance interface{}) (nextState v1alpha1.StateType, result ctrl.Result, err error) {
+func (r *NetworkBindingReconciler) NoneHandler(ctx context.Context, info *machine.Information, instance interface{}) (v1alpha1.StateType, ctrl.Result, error) {
 	_ = instance.(*v1alpha1.NetworkBinding)
-
-	// Set Network Configure
-	return v1alpha1.NetworkBindingCreated, ctrl.Result{RequeueAfter: 10}, nil
+	// Initialize
+	return v1alpha1.NetworkBindingCreated, ctrl.Result{Requeue: true}, nil
 }
 
 // CreateHandler ...
-func (r *NetworkBindingReconciler) CreateHandler(ctx context.Context, info *machine.Information, instance interface{}) (nextState v1alpha1.StateType, result ctrl.Result, err error) {
+func (r *NetworkBindingReconciler) CreateHandler(ctx context.Context, info *machine.Information, instance interface{}) (v1alpha1.StateType, ctrl.Result, error) {
 	_ = instance.(*v1alpha1.NetworkBinding)
-
-	// Set Network Configure
-	return v1alpha1.NetworkBindingConfiguring, ctrl.Result{RequeueAfter: 10}, nil
+	// Configure network
+	return v1alpha1.NetworkBindingConfiguring, ctrl.Result{Requeue: true}, nil
 }
 
 // ConfiguringHandler ...
-func (r *NetworkBindingReconciler) ConfiguringHandler(ctx context.Context, info *machine.Information, instance interface{}) (nextState v1alpha1.StateType, result ctrl.Result, err error) {
+func (r *NetworkBindingReconciler) ConfiguringHandler(ctx context.Context, info *machine.Information, instance interface{}) (v1alpha1.StateType, ctrl.Result, error) {
 	_ = instance.(*v1alpha1.NetworkBinding)
-
-	return v1alpha1.NetworkBindingConfigured, ctrl.Result{}, nil
+	// Check network has been configured or not
+	var configureResutl string
+	switch configureResutl {
+	case "success":
+		return v1alpha1.NetworkBindingConfigured, ctrl.Result{Requeue: false}, nil
+	case "failed":
+		return v1alpha1.NetworkBindingConfigureFailed, ctrl.Result{Requeue: true}, nil
+	}
+	return v1alpha1.NetworkBindingConfiguring, ctrl.Result{Requeue: true, RequeueAfter: time.Second * 10}, nil
 }
 
 // ConfiguredHandler ...
-func (r *NetworkBindingReconciler) ConfiguredHandler(ctx context.Context, info *machine.Information, instance interface{}) (nextState v1alpha1.StateType, result ctrl.Result, err error) {
+func (r *NetworkBindingReconciler) ConfiguredHandler(ctx context.Context, info *machine.Information, instance interface{}) (v1alpha1.StateType, ctrl.Result, error) {
 	_ = instance.(*v1alpha1.NetworkBinding)
-
-	return v1alpha1.NetworkBindingDeleting, ctrl.Result{RequeueAfter: 10}, nil
+	// Deleting network
+	return v1alpha1.NetworkBindingDeleting, ctrl.Result{Requeue: true}, nil
 }
 
 // ConfigureFailedHandler ...
-func (r *NetworkBindingReconciler) ConfigureFailedHandler(ctx context.Context, info *machine.Information, instance interface{}) (nextState v1alpha1.StateType, result ctrl.Result, err error) {
+func (r *NetworkBindingReconciler) ConfigureFailedHandler(ctx context.Context, info *machine.Information, instance interface{}) (v1alpha1.StateType, ctrl.Result, error) {
 	_ = instance.(*v1alpha1.NetworkBinding)
-
-	// 删除Device CR上的配置
-	// 判断配置完成
-	// 若牌子未完成 return v1alpha1.ConfigureFailed, ctrl.Result{RequeueAfter: 10}, nil
-	return v1alpha1.NetworkBindingCreated, ctrl.Result{RequeueAfter: 10}, nil
+	// Reconfigure network
+	return v1alpha1.NetworkBindingCreated, ctrl.Result{Requeue: true}, nil
 }
 
 // DeletingHandler ...
-func (r *NetworkBindingReconciler) DeletingHandler(ctx context.Context, info *machine.Information, instance interface{}) (nextState v1alpha1.StateType, result ctrl.Result, err error) {
+func (r *NetworkBindingReconciler) DeletingHandler(ctx context.Context, info *machine.Information, instance interface{}) (v1alpha1.StateType, ctrl.Result, error) {
 	_ = instance.(*v1alpha1.NetworkBinding)
-
-	return v1alpha1.NetworkBindingNone, ctrl.Result{}, nil
+	// Check network has been deleted or not
+	return v1alpha1.NetworkBindingNone, ctrl.Result{Requeue: true}, nil
 }
