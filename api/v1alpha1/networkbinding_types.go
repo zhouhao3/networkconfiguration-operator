@@ -77,6 +77,9 @@ const (
 
 	// NetworkBindingDeleting ...
 	NetworkBindingDeleting StateType = "Deleting"
+
+	// NetworkBindingDeleted ...
+	NetworkBindingDeleted StateType = "Deleted"
 )
 
 // GetState ...

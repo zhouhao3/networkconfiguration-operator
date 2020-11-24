@@ -6,14 +6,25 @@ import (
 
 	"github.com/metal3-io/networkconfiguration-operator/api/v1alpha1"
 	"github.com/metal3-io/networkconfiguration-operator/pkg/machine"
+	"github.com/metal3-io/networkconfiguration-operator/pkg/util/finalizer"
 	ctrl "sigs.k8s.io/controller-runtime"
+	"sigs.k8s.io/controller-runtime/pkg/reconcile"
 )
+
+const finalizerKey string = "metal3.io.v1alpha1"
 
 // NoneHandler ...
 func (r *NetworkBindingReconciler) NoneHandler(ctx context.Context, info *machine.Information, instance interface{}) (v1alpha1.StateType, ctrl.Result, error) {
-	_ = instance.(*v1alpha1.NetworkBinding)
-	// Initialize
-	return v1alpha1.NetworkBindingCreated, ctrl.Result{Requeue: true}, nil
+	i := instance.(*v1alpha1.NetworkBinding)
+
+	// Add finalizer
+	err := finalizer.AddFinalizer(&i.Finalizers, finalizerKey)
+	result := reconcile.Result{}
+	if err == nil {
+		result.Requeue = true
+	}
+
+	return v1alpha1.NetworkBindingCreated, result, err
 }
 
 // CreateHandler ...
@@ -53,14 +64,18 @@ func (r *NetworkBindingReconciler) ConfigureFailedHandler(ctx context.Context, i
 
 // DeletingHandler ...
 func (r *NetworkBindingReconciler) DeletingHandler(ctx context.Context, info *machine.Information, instance interface{}) (v1alpha1.StateType, ctrl.Result, error) {
-	_ = instance.(*v1alpha1.NetworkBinding)
+	i := instance.(*v1alpha1.NetworkBinding)
+
 	// Check network has been deleted or not
 	var deleteResutl string
 	switch deleteResutl {
 	case "success":
-		return v1alpha1.NetworkBindingNone, ctrl.Result{}, nil
+		// Remove finalizers
+		err := finalizer.RemoveFinalizer(&i.Finalizers, finalizerKey)
+		return v1alpha1.NetworkBindingDeleted, ctrl.Result{Requeue: true}, err
 	case "failed":
 		// Delete network again
 	}
+
 	return v1alpha1.NetworkBindingDeleting, ctrl.Result{Requeue: true, RequeueAfter: time.Second * 10}, nil
 }
