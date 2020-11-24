@@ -73,6 +73,7 @@ func (r *NetworkBindingReconciler) Reconcile(req ctrl.Request) (result ctrl.Resu
 			v1alpha1.NetworkBindingConfigured:      r.ConfiguredHandler,
 			v1alpha1.NetworkBindingConfigureFailed: r.ConfigureFailedHandler,
 			v1alpha1.NetworkBindingDeleting:        r.DeletingHandler,
+			v1alpha1.NetworkBindingDeleted:         r.DeletedHandler,
 		},
 	)
 
