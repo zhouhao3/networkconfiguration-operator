@@ -2,6 +2,7 @@ package machine
 
 import (
 	"context"
+	"fmt"
 	"time"
 
 	"github.com/go-logr/logr"
@@ -37,6 +38,36 @@ type Machine struct {
 	requeueAfter time.Duration
 }
 
+// ErrorType ...
+type ErrorType string
+
+const (
+	// ReconcileError means have error when reconcile
+	ReconcileError ErrorType = "reconcile error"
+
+	// HandlerError means have error in the handler for a state
+	HandlerError ErrorType = "handler error"
+)
+
+// Error ...
+type Error interface {
+	Type() ErrorType
+	Error() error
+}
+
+type machineError struct {
+	errType ErrorType
+	err     error
+}
+
+func (me *machineError) Type() ErrorType {
+	return me.errType
+}
+
+func (me *machineError) Error() error {
+	return me.err
+}
+
 // New create state machine, the paramater of instance must be a pointer
 func New(ctx context.Context, info *Information, instance Instance, handlers *Handlers) Machine {
 	return Machine{
@@ -48,9 +79,23 @@ func New(ctx context.Context, info *Information, instance Instance, handlers *Ha
 }
 
 // Reconcile ...
-func (m *Machine) Reconcile() (ctrl.Result, error) {
-	nextState, result, err := (*m.handlers)[m.instance.GetState()](m.ctx, m.info, m.instance)
+func (m *Machine) Reconcile() (ctrl.Result, Error) {
+	handler, exist := (*m.handlers)[m.instance.GetState()]
+	if !exist {
+		return ctrl.Result{}, &machineError{
+			errType: ReconcileError,
+			err:     fmt.Errorf("no handler for %s state", m.instance.GetState()),
+		}
+	}
+
+	nextState, result, err := handler(m.ctx, m.info, m.instance)
 	m.instance.SetState(nextState)
 
-	return result, err
+	if err == nil {
+		return result, nil
+	}
+	return result, &machineError{
+		errType: HandlerError,
+		err:     err,
+	}
 }

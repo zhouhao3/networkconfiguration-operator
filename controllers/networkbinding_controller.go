@@ -27,10 +27,7 @@ import (
 
 	"github.com/metal3-io/networkconfiguration-operator/api/v1alpha1"
 	"github.com/metal3-io/networkconfiguration-operator/pkg/machine"
-	"github.com/metal3-io/networkconfiguration-operator/pkg/util/finalizer"
 )
-
-const finalizerKey string = "metal3.io.v1alpha1"
 
 // NetworkBindingReconciler reconciles a NetworkBinding object
 type NetworkBindingReconciler struct {
@@ -50,13 +47,13 @@ func (r *NetworkBindingReconciler) SetupWithManager(mgr ctrl.Manager) error {
 }
 
 // Reconcile ...
-func (r *NetworkBindingReconciler) Reconcile(req ctrl.Request) (ctrl.Result, error) {
+func (r *NetworkBindingReconciler) Reconcile(req ctrl.Request) (result ctrl.Result, err error) {
 	_ = context.Background()
 	_ = r.Log.WithValues("networkbinding", req.NamespacedName)
 
 	// Fetch the instance
 	instance := &v1alpha1.NetworkBinding{}
-	err := r.Get(context.TODO(), req.NamespacedName, instance)
+	err = r.Get(context.TODO(), req.NamespacedName, instance)
 	if err != nil {
 		// Error reading the object - requeue the request.
 		return reconcile.Result{}, err
@@ -79,21 +76,49 @@ func (r *NetworkBindingReconciler) Reconcile(req ctrl.Request) (ctrl.Result, err
 		},
 	)
 
+	var merr machine.Error
 	switch {
 	// On object created
 	case instance.DeletionTimestamp.IsZero() && len(instance.Finalizers) == 0:
-		// Add finalizer
-		err = finalizer.AddFinalizer(&instance.Finalizers, finalizerKey)
-		// Do something
-		_, _ = m.Reconcile()
+		// Reconcile state
+		result, merr = m.Reconcile()
+		if merr != nil {
+			err = merr.Error()
+			switch merr.Type() {
+			case machine.ReconcileError:
+				// Do something
+			case machine.HandlerError:
+				// Do something
+			}
+		}
+
 	// On object updated
 	case instance.DeletionTimestamp.IsZero() && len(instance.Finalizers) != 0:
-		// Do something
+		// Reconcile state
+		result, merr = m.Reconcile()
+		if merr != nil {
+			err = merr.Error()
+			switch merr.Type() {
+			case machine.ReconcileError:
+				// Do something
+			case machine.HandlerError:
+				// Do something
+			}
+		}
 
 	// On object delete
 	case !instance.DeletionTimestamp.IsZero():
-		// Remove finalizers, you can do something by finalizer hook
-		err = finalizer.RemoveFinalizer(&instance, &instance.Finalizers, finalizerKey)
+		// Reconcile state
+		result, merr = m.Reconcile()
+		if merr != nil {
+			err = merr.Error()
+			switch merr.Type() {
+			case machine.ReconcileError:
+				// Do something
+			case machine.HandlerError:
+				// Do something
+			}
+		}
 	}
 
 	// Update object
