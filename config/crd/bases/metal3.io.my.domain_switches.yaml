@@ -42,17 +42,9 @@ spec:
                 type: string
               os:
                 type: string
-            required:
-            - ip
-            - mac
-            - os
-            type: object
-          status:
-            description: SwitchStatus defines the observed state of Switch
-            properties:
               ports:
                 items:
-                  description: SwitchPort ...
+                  description: SwitchSpecPort ...
                   properties:
                     lagWith:
                       description: Port ...
@@ -77,6 +69,34 @@ spec:
                       - deviceRef
                       - portID
                       type: object
+                    networkConfigurationRef:
+                      description: NetworkConfigurationRef is the reference for NetworkConfiguration
+                        CR
+                      properties:
+                        name:
+                          type: string
+                        nameSpace:
+                          type: string
+                      required:
+                      - name
+                      - nameSpace
+                      type: object
+                    portID:
+                      type: string
+                  type: object
+                type: array
+            required:
+            - ip
+            - mac
+            - os
+            type: object
+          status:
+            description: SwitchStatus defines the observed state of Switch
+            properties:
+              ports:
+                items:
+                  description: SwitchStatusPort ...
+                  properties:
                     networkConfiguration:
                       description: NetworkConfiguration is the Schema for the networkconfigurations
                         API
@@ -174,19 +194,9 @@ spec:
                               type: array
                           type: object
                       type: object
-                    networkConfigurationRef:
-                      description: NetworkConfigurationRef is the reference for NetworkConfiguration
-                        CR
-                      properties:
-                        name:
-                          type: string
-                        nameSpace:
-                          type: string
-                      required:
-                      - name
-                      - nameSpace
-                      type: object
                     portID:
+                      type: string
+                    state:
                       type: string
                   type: object
                 type: array

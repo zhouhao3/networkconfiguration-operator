@@ -46,20 +46,27 @@ type Switch struct {
 
 // SwitchSpec defines the desired state of Switch
 type SwitchSpec struct {
-	OS  string `json:"os"`
-	IP  string `json:"ip"`
-	MAC string `json:"mac"`
+	OS    string           `json:"os"`
+	IP    string           `json:"ip"`
+	MAC   string           `json:"mac"`
+	Ports []SwitchSpecPort `json:"ports,omitempty"`
 }
 
-// SwitchPort ...
-type SwitchPort struct {
+// SwitchSpecPort ...
+type SwitchSpecPort struct {
 	PortID                  string                   `json:"portID,omitempty"`
-	NetworkConfiguration    *NetworkConfiguration    `json:"networkConfiguration,omitempty"`
 	NetworkConfigurationRef *NetworkConfigurationRef `json:"networkConfigurationRef,omitempty"`
 	LagWith                 Port                     `json:"lagWith,omitempty"`
 }
 
 // SwitchStatus defines the observed state of Switch
 type SwitchStatus struct {
-	Ports []SwitchPort `json:"ports,omitempty"`
+	Ports []SwitchStatusPort `json:"ports,omitempty"`
+}
+
+// SwitchStatusPort ...
+type SwitchStatusPort struct {
+	PortID               string                `json:"portID,omitempty"`
+	NetworkConfiguration *NetworkConfiguration `json:"networkConfiguration,omitempty"`
+	State                string                `json:"state,omitempty"`
 }
