@@ -55,7 +55,7 @@ func (r *NetworkBindingReconciler) Reconcile(req ctrl.Request) (result ctrl.Resu
 	instance := &v1alpha1.NetworkBinding{}
 	err = r.Get(context.TODO(), req.NamespacedName, instance)
 	if err != nil {
-		// Error reading the object - requeue the request.
+		// Error reading the object - requeue the request
 		return reconcile.Result{}, err
 	}
 
@@ -67,13 +67,11 @@ func (r *NetworkBindingReconciler) Reconcile(req ctrl.Request) (result ctrl.Resu
 		},
 		instance,
 		&machine.Handlers{
-			v1alpha1.NetworkBindingNone:            r.NoneHandler,
-			v1alpha1.NetworkBindingCreated:         r.CreateHandler,
-			v1alpha1.NetworkBindingConfiguring:     r.ConfiguringHandler,
-			v1alpha1.NetworkBindingConfigured:      r.ConfiguredHandler,
-			v1alpha1.NetworkBindingConfigureFailed: r.ConfigureFailedHandler,
-			v1alpha1.NetworkBindingDeleting:        r.DeletingHandler,
-			v1alpha1.NetworkBindingDeleted:         r.DeletedHandler,
+			v1alpha1.NetworkBindingCreated:     r.CreateHandler,
+			v1alpha1.NetworkBindingConfiguring: r.ConfiguringHandler,
+			v1alpha1.NetworkBindingConfigured:  r.ConfiguredHandler,
+			v1alpha1.NetworkBindingDeleting:    r.DeletingHandler,
+			v1alpha1.NetworkBindingDeleted:     r.DeletedHandler,
 		},
 	)
 
@@ -109,6 +107,7 @@ func (r *NetworkBindingReconciler) Reconcile(req ctrl.Request) (result ctrl.Resu
 
 	// On object delete
 	case !instance.DeletionTimestamp.IsZero():
+		instance.SetState(v1alpha1.NetworkBindingDeleting)
 		// Reconcile state
 		result, merr = m.Reconcile()
 		if merr != nil {
