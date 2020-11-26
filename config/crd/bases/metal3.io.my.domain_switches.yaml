@@ -83,6 +83,9 @@ spec:
                       type: object
                     portID:
                       type: string
+                  required:
+                  - networkConfigurationRef
+                  - portID
                   type: object
                 type: array
             required:
@@ -123,6 +126,7 @@ spec:
                     portID:
                       type: string
                     state:
+                      description: StateType is the type of .status.state
                       type: string
                   type: object
                 type: array

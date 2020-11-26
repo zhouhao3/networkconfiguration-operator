@@ -83,7 +83,7 @@ func (d *DeviceRef) Fetch(client *client.Client) (interface{}, error) {
 		return instance, nil
 	}
 
-	return nil, errors.New("")
+	return nil, errors.New("can't find instance for the kind")
 }
 
 // Port ...

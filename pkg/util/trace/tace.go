@@ -8,7 +8,7 @@ import (
 	sdktrace "go.opentelemetry.io/otel/sdk/trace"
 )
 
-// InitTracer ...
+// InitTracer for opentelemetry
 func InitTracer() func() {
 	var err error
 	exp, err := stdout.NewExporter(stdout.WithPrettyPrint())

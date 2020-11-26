@@ -2,7 +2,7 @@ package machine
 
 import (
 	"context"
-	"fmt"
+	"errors"
 	"time"
 
 	"github.com/go-logr/logr"
@@ -11,13 +11,14 @@ import (
 	"sigs.k8s.io/controller-runtime/pkg/client"
 )
 
-// Handler ...
+// Handler is a state handle function
 type Handler func(ctx context.Context, info *Information, instance interface{}) (nextState v1alpha1.StateType, result ctrl.Result, err error)
 
-// Handlers ...
+// Handlers includes a lot of handler
 type Handlers map[v1alpha1.StateType]Handler
 
-// Instance ...
+// Instance is a object for the CR need be reconcile
+// NOTE: Instance must be a pointer
 type Instance interface {
 	GetState() v1alpha1.StateType
 	SetState(state v1alpha1.StateType)
@@ -29,7 +30,7 @@ type Information struct {
 	Logger logr.Logger
 }
 
-// Machine ...
+// Machine is a state machine
 type Machine struct {
 	ctx          context.Context
 	info         *Information
@@ -38,7 +39,7 @@ type Machine struct {
 	requeueAfter time.Duration
 }
 
-// ErrorType ...
+// ErrorType is the error when reconcile state machine
 type ErrorType string
 
 const (
@@ -68,7 +69,8 @@ func (me *machineError) Error() error {
 	return me.err
 }
 
-// New create state machine, the paramater of instance must be a pointer
+// New create state machine
+// NOTE: The paramater of instance must be a pointer
 func New(ctx context.Context, info *Information, instance Instance, handlers *Handlers) Machine {
 	return Machine{
 		ctx:      ctx,
@@ -78,13 +80,13 @@ func New(ctx context.Context, info *Information, instance Instance, handlers *Ha
 	}
 }
 
-// Reconcile ...
+// Reconcile state machine
 func (m *Machine) Reconcile() (ctrl.Result, Error) {
 	handler, exist := (*m.handlers)[m.instance.GetState()]
 	if !exist {
 		return ctrl.Result{}, &machineError{
 			errType: ReconcileError,
-			err:     fmt.Errorf("no handler for %s state", m.instance.GetState()),
+			err:     errors.New("no handler for the state"),
 		}
 	}
 
