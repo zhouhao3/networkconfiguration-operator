@@ -3,11 +3,8 @@ digraph NetworkBinding {
     Created -> Configuring
 
     Configuring -> Configured
-    Configuring -> ConfigureFailed
+    Configuring -> Configuring [label="configure network failed"]
     Configuring -> Deleting [label="!DeletionTimestamp.IsZero()"]
-
-    ConfigureFailed -> Configuring
-    ConfigureFailed -> Deleting [label="!DeletionTimestamp.IsZero()"]
 
     Configured -> Deleting [label="!DeletionTimestamp.IsZero()"]
     Deleting -> Deleted

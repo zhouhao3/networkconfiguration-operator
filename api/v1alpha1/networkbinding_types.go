@@ -60,20 +60,14 @@ type NetworkBindingStatus struct {
 }
 
 const (
-	// NetworkBindingNone ...
-	NetworkBindingNone StateType = ""
-
 	// NetworkBindingCreated ...
-	NetworkBindingCreated StateType = "Created"
+	NetworkBindingCreated StateType = ""
 
 	// NetworkBindingConfiguring ...
 	NetworkBindingConfiguring StateType = "Configuring"
 
 	// NetworkBindingConfigured ...
 	NetworkBindingConfigured StateType = "Configured"
-
-	// NetworkBindingConfigureFailed ...
-	NetworkBindingConfigureFailed StateType = "Configure failed"
 
 	// NetworkBindingDeleting ...
 	NetworkBindingDeleting StateType = "Deleting"
