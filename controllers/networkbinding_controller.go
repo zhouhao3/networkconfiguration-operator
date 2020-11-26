@@ -67,11 +67,11 @@ func (r *NetworkBindingReconciler) Reconcile(req ctrl.Request) (result ctrl.Resu
 		},
 		instance,
 		&machine.Handlers{
-			v1alpha1.NetworkBindingCreated:     r.CreateHandler,
-			v1alpha1.NetworkBindingConfiguring: r.ConfiguringHandler,
-			v1alpha1.NetworkBindingConfigured:  r.ConfiguredHandler,
-			v1alpha1.NetworkBindingDeleting:    r.DeletingHandler,
-			v1alpha1.NetworkBindingDeleted:     r.DeletedHandler,
+			v1alpha1.NetworkBindingCreated:     r.createHandler,
+			v1alpha1.NetworkBindingConfiguring: r.configuringHandler,
+			v1alpha1.NetworkBindingConfigured:  r.configuredHandler,
+			v1alpha1.NetworkBindingDeleting:    r.deletingHandler,
+			v1alpha1.NetworkBindingDeleted:     r.deletedHandler,
 		},
 	)
 
