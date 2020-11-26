@@ -1,9 +1,6 @@
 KUSTOMIZE=./tools/kustomize
 CONTROLLER_GEN=./tools/controller-gen
 DOT= ./tools/dot
-GOLINT= ./hack/golint.sh
-GOFMT= ./hack/gofmt.sh
-GOSEC= ./hack/gosec.sh
 
 # Image URL to use all building/pushing image targets
 IMG ?= controller:latest
@@ -66,11 +63,11 @@ test: generate gofmt golint govet gosec unit manifests
 
 # Run go fmt against code
 gofmt:
-	$(GOFMT)
+	./hack/gofmt.sh
 
 # Run go lint against code
 golint:
-	$(GOLINT)
+	./hack/golint.sh
 
 # Run go vet against code
 govet:
@@ -78,7 +75,7 @@ govet:
 
 # Run go sec against code
 gosec:
-	$(GOSEC)
+	./hack/gosec.sh
 
 # Run go test against code
 unit:
