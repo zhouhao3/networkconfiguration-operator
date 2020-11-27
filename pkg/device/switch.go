@@ -34,3 +34,8 @@ func (s *Switch) ConfigurePort() {
 func (s *Switch) DeConfigurePort() {
 
 }
+
+// PortState ...
+func (s *Switch) PortState(portID string) v1alpha1.StateType {
+	return ""
+}

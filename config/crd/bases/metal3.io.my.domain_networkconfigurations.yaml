@@ -82,7 +82,7 @@ spec:
                   smartNIC:
                     type: boolean
                   speed:
-                    type: string
+                    type: integer
                 type: object
               untaggedVLAN:
                 type: string
