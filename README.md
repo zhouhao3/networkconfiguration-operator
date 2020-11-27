@@ -1,5 +1,4 @@
-[![Continuous Integration](https://github.com/Hellcatlk/networkconfiguration-operator/workflows/Continuous%20Integration
-/badge.svg)](https://github.com/Hellcatlk/networkconfiguration-operator/actions)
+[![Continuous Integration](https://github.com/Hellcatlk/networkconfiguration-operator/workflows/Continuous%20Integration/badge.svg)](https://github.com/Hellcatlk/networkconfiguration-operator/actions)
 
 # NetworkConfiguration Operator
 
