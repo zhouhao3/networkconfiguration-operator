@@ -48,10 +48,14 @@ type NetworkBinding struct {
 type NetworkBindingSpec struct {
 	NetworkConfigurationRef NetworkConfigurationRef `json:"networkConfigurationRef"`
 
-	// If the length of ports isn't 1,
-	// it means we need do link aggregation for this ports.
-	// +kubebuilder:validation:MaxItems=2
-	Ports []Port `json:"ports"`
+	Port NetworkBindingSpecPort `json:"port"`
+}
+
+// NetworkBindingSpecPort ...
+type NetworkBindingSpecPort struct {
+	PortID    string    `json:"portID"`
+	LagWith   string    `json:"lagWith,omitempty"`
+	DeviceRef DeviceRef `json:"deviceRef"`
 }
 
 // NetworkBindingStatus defines the observed state of NetworkBinding
@@ -60,8 +64,11 @@ type NetworkBindingStatus struct {
 }
 
 const (
-	// NetworkBindingCreated ...
-	NetworkBindingCreated StateType = ""
+	// NetworkBindingNone ...
+	NetworkBindingNone StateType = ""
+
+	// NetworkBindingCreating ...
+	NetworkBindingCreating StateType = "Creating"
 
 	// NetworkBindingConfiguring ...
 	NetworkBindingConfiguring StateType = "Configuring"

@@ -21,4 +21,5 @@ func New(client *client.Client, deviceRef *v1alpha1.DeviceRef) (Device, error) {
 type Device interface {
 	ConfigurePort()
 	DeConfigurePort()
+	PortState(portID string) v1alpha1.StateType
 }

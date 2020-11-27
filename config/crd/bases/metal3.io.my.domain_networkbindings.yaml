@@ -48,37 +48,34 @@ spec:
                 - name
                 - nameSpace
                 type: object
-              ports:
-                description: If the length of ports isn't 1, it means we need do link
-                  aggregation for this ports.
-                items:
-                  description: Port ...
-                  properties:
-                    deviceRef:
-                      description: DeviceRef is the reference for Device CR
-                      properties:
-                        kind:
-                          type: string
-                        name:
-                          type: string
-                        nameSpace:
-                          type: string
-                      required:
-                      - kind
-                      - name
-                      - nameSpace
-                      type: object
-                    portID:
-                      type: string
-                  required:
-                  - deviceRef
-                  - portID
-                  type: object
-                maxItems: 2
-                type: array
+              port:
+                description: NetworkBindingSpecPort ...
+                properties:
+                  deviceRef:
+                    description: DeviceRef is the reference for Device CR
+                    properties:
+                      kind:
+                        type: string
+                      name:
+                        type: string
+                      nameSpace:
+                        type: string
+                    required:
+                    - kind
+                    - name
+                    - nameSpace
+                    type: object
+                  lagWith:
+                    type: string
+                  portID:
+                    type: string
+                required:
+                - deviceRef
+                - portID
+                type: object
             required:
             - networkConfigurationRef
-            - ports
+            - port
             type: object
           status:
             description: NetworkBindingStatus defines the observed state of NetworkBinding

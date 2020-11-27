@@ -55,8 +55,8 @@ type SwitchSpec struct {
 // SwitchSpecPort ...
 type SwitchSpecPort struct {
 	PortID                  string                  `json:"portID"`
+	LagWith                 string                  `json:"lagWith,omitempty"`
 	NetworkConfigurationRef NetworkConfigurationRef `json:"networkConfigurationRef"`
-	LagWith                 *Port                   `json:"lagWith,omitempty"`
 }
 
 // SwitchStatus defines the observed state of Switch
@@ -67,6 +67,6 @@ type SwitchStatus struct {
 // SwitchStatusPort ...
 type SwitchStatusPort struct {
 	PortID  string    `json:"portID,omitempty"`
-	LagWith *Port     `json:"lagWith,omitempty"`
+	LagWith string    `json:"lagWith,omitempty"`
 	State   StateType `json:"state,omitempty"`
 }

@@ -47,28 +47,7 @@ spec:
                   description: SwitchSpecPort ...
                   properties:
                     lagWith:
-                      description: Port ...
-                      properties:
-                        deviceRef:
-                          description: DeviceRef is the reference for Device CR
-                          properties:
-                            kind:
-                              type: string
-                            name:
-                              type: string
-                            nameSpace:
-                              type: string
-                          required:
-                          - kind
-                          - name
-                          - nameSpace
-                          type: object
-                        portID:
-                          type: string
-                      required:
-                      - deviceRef
-                      - portID
-                      type: object
+                      type: string
                     networkConfigurationRef:
                       description: NetworkConfigurationRef is the reference for NetworkConfiguration
                         CR
@@ -101,28 +80,7 @@ spec:
                   description: SwitchStatusPort ...
                   properties:
                     lagWith:
-                      description: Port ...
-                      properties:
-                        deviceRef:
-                          description: DeviceRef is the reference for Device CR
-                          properties:
-                            kind:
-                              type: string
-                            name:
-                              type: string
-                            nameSpace:
-                              type: string
-                          required:
-                          - kind
-                          - name
-                          - nameSpace
-                          type: object
-                        portID:
-                          type: string
-                      required:
-                      - deviceRef
-                      - portID
-                      type: object
+                      type: string
                     portID:
                       type: string
                     state:

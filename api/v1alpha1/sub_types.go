@@ -3,6 +3,7 @@ package v1alpha1
 import (
 	"context"
 	"errors"
+	"reflect"
 
 	"k8s.io/apimachinery/pkg/types"
 	"sigs.k8s.io/controller-runtime/pkg/client"
@@ -86,14 +87,51 @@ func (d *DeviceRef) Fetch(client *client.Client) (interface{}, error) {
 	return nil, errors.New("can't find instance for the kind")
 }
 
-// Port ...
-type Port struct {
-	PortID    string    `json:"portID"`
-	DeviceRef DeviceRef `json:"deviceRef"`
-}
-
 // NICHint ...
 type NICHint struct {
-	Speed    string `json:"speed,omitempty"`
-	SmartNIC bool   `json:"smartNIC,omitempty"`
+	Speed    uint `json:"speed,omitempty"`
+	SmartNIC bool `json:"smartNIC,omitempty"`
+}
+
+// Assess nicHints and return a score.
+func (n NICHint) Assess(nicHint NICHint) float64 {
+	rsv := reflect.ValueOf(n)
+	rav := reflect.ValueOf(nicHint)
+
+	score := 0.0
+	for i := 0; i < rsv.NumField(); i++ {
+		switch rsv.Field(i).Kind() {
+		case reflect.Bool:
+			if rsv.Field(i).Bool() && !rav.Field(i).Bool() {
+				return 0
+			} else if rsv.Field(i).Bool() == rav.Field(i).Bool() {
+				score += 10
+			}
+
+		case reflect.String:
+			if rsv.Field(i).String() != rav.Field(i).String() {
+				return 0
+			}
+
+		case reflect.Int, reflect.Int8, reflect.Int16, reflect.Int32, reflect.Int64:
+			if rsv.Field(i).Int() > rav.Field(i).Int() {
+				return 0
+			}
+			score += float64(rsv.Field(i).Int()) / float64(rav.Field(i).Int()) * 100
+
+		case reflect.Uint, reflect.Uint8, reflect.Uint16, reflect.Uint32, reflect.Uint64:
+			if rsv.Field(i).Uint() > rav.Field(i).Uint() {
+				return 0
+			}
+			score += float64(rsv.Field(i).Uint()) / float64(rav.Field(i).Uint()) * 100
+
+		case reflect.Float32, reflect.Float64:
+			if rsv.Field(i).Float() > rav.Field(i).Float() {
+				return 0
+			}
+			score += rsv.Field(i).Float() / rav.Field(i).Float() * 100
+		}
+	}
+
+	return score
 }
