@@ -2,8 +2,6 @@
 
 # NetworkConfiguration Operator
 
-NetworkConfiguration Operator expand the scope of Metal³ to include an API to manage physical network devices.
-
 ## Quick start
 
 ## NOTE
