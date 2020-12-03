@@ -20,22 +20,22 @@ func newSwitch(client *client.Client, deviceRef *v1alpha1.DeviceRef) (*Switch, e
 	}, nil
 }
 
-// Switch ...
+// Switch is a kind of network device
 type Switch struct {
 	instance v1alpha1.Switch
 }
 
-// ConfigurePort ...
-func (s *Switch) ConfigurePort() {
-
+// ConfigurePort set the network configure to the port
+func (s *Switch) ConfigurePort(port v1alpha1.NetworkBindingSpecPort) error {
+	return nil
 }
 
-// DeConfigurePort ...
-func (s *Switch) DeConfigurePort() {
-
+// DeConfigurePort remove the network configure from the port
+func (s *Switch) DeConfigurePort(port v1alpha1.NetworkBindingSpecPort) error {
+	return nil
 }
 
-// PortState ...
+// PortState return the port's state of the device
 func (s *Switch) PortState(portID string) v1alpha1.StateType {
 	return ""
 }

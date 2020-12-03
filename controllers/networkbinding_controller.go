@@ -59,6 +59,7 @@ func (r *NetworkBindingReconciler) Reconcile(req ctrl.Request) (result ctrl.Resu
 		return reconcile.Result{}, err
 	}
 
+	// Initialize state machine
 	m := machine.New(
 		context.TODO(),
 		&machine.Information{

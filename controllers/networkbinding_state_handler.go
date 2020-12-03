@@ -66,19 +66,15 @@ func (r *NetworkBindingReconciler) configuringHandler(ctx context.Context, info 
 		// If configure network success, we just need to set next state to configured, but not Reconcile
 		return v1alpha1.NetworkBindingConfigured, ctrl.Result{Requeue: false}, nil
 
-	case "not found":
-		dev.ConfigurePort()
+	case "not found", "configure failed":
 		// Configure network
-
-	case "configure failed":
-		// Configure network again
-		return v1alpha1.NetworkBindingConfiguring, ctrl.Result{Requeue: true, RequeueAfter: time.Second * 120}, nil
+		err = dev.ConfigurePort(i.Spec.Port)
 
 	default:
 		// Just wait
 	}
 
-	return v1alpha1.NetworkBindingConfiguring, ctrl.Result{Requeue: true, RequeueAfter: time.Second * 10}, nil
+	return v1alpha1.NetworkBindingConfiguring, ctrl.Result{Requeue: true, RequeueAfter: time.Second * 10}, err
 }
 
 // configuredHandler will be called when the user want to delete the network configuration for the port be configured
@@ -101,18 +97,15 @@ func (r *NetworkBindingReconciler) deletingHandler(ctx context.Context, info *ma
 	case "deleting success":
 		return v1alpha1.NetworkBindingDeleted, ctrl.Result{Requeue: true}, nil
 
-	case "configure success":
+	case "configure success", "delete failed":
 		// Delete network
-
-	case "delete failed":
-		// Delete network again
-		return v1alpha1.NetworkBindingDeleting, ctrl.Result{Requeue: true, RequeueAfter: time.Second * 120}, nil
+		err = dev.DeConfigurePort(i.Spec.Port)
 
 	default:
 		// Just wait
 	}
 
-	return v1alpha1.NetworkBindingDeleting, ctrl.Result{Requeue: true, RequeueAfter: time.Second * 10}, nil
+	return v1alpha1.NetworkBindingDeleting, ctrl.Result{Requeue: true, RequeueAfter: time.Second * 10}, err
 }
 
 // deletedHandler will be called when the network configuration has been deleted

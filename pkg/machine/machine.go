@@ -50,7 +50,7 @@ const (
 	HandlerError ErrorType = "handler error"
 )
 
-// Error ...
+// Error include error type and error message from state machine
 type Error interface {
 	Type() ErrorType
 	Error() error
@@ -69,7 +69,7 @@ func (me *machineError) Error() error {
 	return me.err
 }
 
-// New create state machine
+// New a state machine
 // NOTE: The paramater of instance must be a pointer
 func New(ctx context.Context, info *Information, instance Instance, handlers *Handlers) Machine {
 	return Machine{
@@ -92,12 +92,12 @@ func (m *Machine) Reconcile() (ctrl.Result, Error) {
 
 	nextState, result, err := handler(m.ctx, m.info, m.instance)
 	m.instance.SetState(nextState)
+	if err != nil {
+		return result, &machineError{
+			errType: HandlerError,
+			err:     err,
+		}
+	}
 
-	if err == nil {
-		return result, nil
-	}
-	return result, &machineError{
-		errType: HandlerError,
-		err:     err,
-	}
+	return result, nil
 }
