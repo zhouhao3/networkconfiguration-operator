@@ -67,8 +67,13 @@ func (r *NetworkBindingReconciler) configuringHandler(ctx context.Context, info 
 		return v1alpha1.NetworkBindingConfigured, ctrl.Result{Requeue: false}, nil
 
 	case "not found", "configure failed":
+		// Fetch network configuration
+		networkConfiguration, err := i.Spec.NetworkConfigurationRef.Fetch(info.Client)
+		if err != nil {
+			return v1alpha1.NetworkBindingConfiguring, ctrl.Result{Requeue: true, RequeueAfter: time.Second * 10}, err
+		}
 		// Configure network
-		err = dev.ConfigurePort(i.Spec.Port)
+		err = dev.ConfigurePort(networkConfiguration, &i.Spec.Port)
 
 	default:
 		// Just wait
@@ -99,7 +104,7 @@ func (r *NetworkBindingReconciler) deletingHandler(ctx context.Context, info *ma
 
 	case "configure success", "delete failed":
 		// Delete network
-		err = dev.DeConfigurePort(i.Spec.Port)
+		err = dev.DeConfigurePort(&i.Spec.Port)
 
 	default:
 		// Just wait

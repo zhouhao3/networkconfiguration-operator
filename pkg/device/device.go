@@ -20,10 +20,10 @@ func New(client *client.Client, deviceRef *v1alpha1.DeviceRef) (Device, error) {
 // Device ...
 type Device interface {
 	// ConfigurePort set the network configure to the port
-	ConfigurePort(port v1alpha1.NetworkBindingSpecPort) error
+	ConfigurePort(networkConfiguration *v1alpha1.NetworkConfiguration, port *v1alpha1.NetworkBindingSpecPort) error
 
 	// DeConfigurePort remove the network configure from the port
-	DeConfigurePort(port v1alpha1.NetworkBindingSpecPort) error
+	DeConfigurePort(port *v1alpha1.NetworkBindingSpecPort) error
 
 	// PortState return the port's state of the device
 	PortState(portID string) v1alpha1.StateType
