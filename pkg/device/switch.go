@@ -26,12 +26,12 @@ type Switch struct {
 }
 
 // ConfigurePort set the network configure to the port
-func (s *Switch) ConfigurePort(port v1alpha1.NetworkBindingSpecPort) error {
+func (s *Switch) ConfigurePort(networkConfiguration *v1alpha1.NetworkConfiguration, port *v1alpha1.NetworkBindingSpecPort) error {
 	return nil
 }
 
 // DeConfigurePort remove the network configure from the port
-func (s *Switch) DeConfigurePort(port v1alpha1.NetworkBindingSpecPort) error {
+func (s *Switch) DeConfigurePort(port *v1alpha1.NetworkBindingSpecPort) error {
 	return nil
 }
 
