@@ -32,7 +32,6 @@ type Information struct {
 
 // Machine is a state machine
 type Machine struct {
-	ctx          context.Context
 	info         *Information
 	instance     Instance
 	handlers     *Handlers
@@ -71,9 +70,8 @@ func (me *machineError) Error() error {
 
 // New a state machine
 // NOTE: The paramater of instance must be a pointer
-func New(ctx context.Context, info *Information, instance Instance, handlers *Handlers) Machine {
+func New(info *Information, instance Instance, handlers *Handlers) Machine {
 	return Machine{
-		ctx:      ctx,
 		info:     info,
 		instance: instance,
 		handlers: handlers,
@@ -81,7 +79,7 @@ func New(ctx context.Context, info *Information, instance Instance, handlers *Ha
 }
 
 // Reconcile state machine
-func (m *Machine) Reconcile() (ctrl.Result, Error) {
+func (m *Machine) Reconcile(ctx context.Context) (ctrl.Result, Error) {
 	handler, exist := (*m.handlers)[m.instance.GetState()]
 	if !exist {
 		return ctrl.Result{}, &machineError{
@@ -90,7 +88,7 @@ func (m *Machine) Reconcile() (ctrl.Result, Error) {
 		}
 	}
 
-	nextState, result, err := handler(m.ctx, m.info, m.instance)
+	nextState, result, err := handler(ctx, m.info, m.instance)
 	m.instance.SetState(nextState)
 	if err != nil {
 		return result, &machineError{
