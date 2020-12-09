@@ -39,7 +39,6 @@ func handlerTest2(ctx context.Context, info *Information, instance interface{}) 
 func TestMachine(t *testing.T) {
 	var instance testInstance
 	m := New(
-		context.TODO(),
 		nil,
 		&instance,
 		&Handlers{
@@ -48,15 +47,15 @@ func TestMachine(t *testing.T) {
 			"test2": handlerTest2,
 		},
 	)
-	m.Reconcile()
+	m.Reconcile(context.TODO())
 	if instance.out != "Hello" {
 		t.Fatal(instance.out)
 	}
-	m.Reconcile()
+	m.Reconcile(context.TODO())
 	if instance.out != "Hello world" {
 		t.Fatal(instance.out)
 	}
-	m.Reconcile()
+	m.Reconcile(context.TODO())
 	if instance.out != "Hello world!" {
 		t.Fatal(instance.out)
 	}
@@ -65,7 +64,6 @@ func TestMachine(t *testing.T) {
 func BenchmarkMachine(b *testing.B) {
 	var instance testInstance
 	m := New(
-		context.TODO(),
 		nil,
 		&instance,
 		&Handlers{
@@ -76,7 +74,7 @@ func BenchmarkMachine(b *testing.B) {
 	)
 	b.ResetTimer()
 	for i := 0; i < b.N; i++ {
-		m.Reconcile()
+		m.Reconcile(context.TODO())
 	}
 }
 
@@ -99,7 +97,6 @@ func handlerTest22(ctx context.Context, info *Information, instance interface{})
 
 func BenchmarkMachineNoAssert(b *testing.B) {
 	m := New(
-		context.TODO(),
 		nil,
 		&tInstance,
 		&Handlers{
@@ -110,6 +107,6 @@ func BenchmarkMachineNoAssert(b *testing.B) {
 	)
 	b.ResetTimer()
 	for i := 0; i < b.N; i++ {
-		m.Reconcile()
+		m.Reconcile(context.TODO())
 	}
 }

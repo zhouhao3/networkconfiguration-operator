@@ -1,10 +1,37 @@
 package device
 
 import (
+	"context"
 	"errors"
 
 	"github.com/metal3-io/networkconfiguration-operator/api/v1alpha1"
 	"sigs.k8s.io/controller-runtime/pkg/client"
+)
+
+// PortState ...
+type PortState string
+
+const (
+	// NotConfigured ...
+	NotConfigured PortState = "not configured"
+
+	// Configuring ...
+	Configuring PortState = "configuring"
+
+	// Configured ...
+	Configured PortState = "configured"
+
+	// ConfigureFailed ...
+	ConfigureFailed PortState = "configure failed"
+
+	// Deleting ...
+	Deleting PortState = "deleting"
+
+	// Deleted ...
+	Deleted PortState = "deleted"
+
+	// DeleteFailed ...
+	DeleteFailed PortState = "delete failed"
 )
 
 // New ...
@@ -20,11 +47,11 @@ func New(client *client.Client, deviceRef *v1alpha1.DeviceRef) (Device, error) {
 // Device ...
 type Device interface {
 	// ConfigurePort set the network configure to the port
-	ConfigurePort(networkConfiguration *v1alpha1.NetworkConfiguration, port *v1alpha1.NetworkBindingSpecPort) error
+	ConfigurePort(ctx context.Context, networkConfiguration *v1alpha1.NetworkConfiguration, port *v1alpha1.NetworkBindingSpecPort) error
 
 	// DeConfigurePort remove the network configure from the port
-	DeConfigurePort(port *v1alpha1.NetworkBindingSpecPort) error
+	DeConfigurePort(ctx context.Context, port *v1alpha1.NetworkBindingSpecPort) error
 
 	// PortState return the port's state of the device
-	PortState(portID string) v1alpha1.StateType
+	PortState(ctx context.Context, portID string) PortState
 }

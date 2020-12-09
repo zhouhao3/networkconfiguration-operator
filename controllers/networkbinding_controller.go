@@ -61,7 +61,6 @@ func (r *NetworkBindingReconciler) Reconcile(req ctrl.Request) (result ctrl.Resu
 
 	// Initialize state machine
 	m := machine.New(
-		context.TODO(),
 		&machine.Information{
 			Client: r.Client,
 			Logger: r.Log,
@@ -82,7 +81,7 @@ func (r *NetworkBindingReconciler) Reconcile(req ctrl.Request) (result ctrl.Resu
 	// On object created
 	case instance.DeletionTimestamp.IsZero() && len(instance.Finalizers) == 0:
 		// Reconcile state
-		result, merr = m.Reconcile()
+		result, merr = m.Reconcile(context.TODO())
 		if merr != nil {
 			err = merr.Error()
 			switch merr.Type() {
@@ -96,7 +95,7 @@ func (r *NetworkBindingReconciler) Reconcile(req ctrl.Request) (result ctrl.Resu
 	// On object updated
 	case instance.DeletionTimestamp.IsZero() && len(instance.Finalizers) != 0:
 		// Reconcile state
-		result, merr = m.Reconcile()
+		result, merr = m.Reconcile(context.TODO())
 		if merr != nil {
 			err = merr.Error()
 			switch merr.Type() {
@@ -111,7 +110,7 @@ func (r *NetworkBindingReconciler) Reconcile(req ctrl.Request) (result ctrl.Resu
 	case !instance.DeletionTimestamp.IsZero():
 		instance.SetState(v1alpha1.NetworkBindingDeleting)
 		// Reconcile state
-		result, merr = m.Reconcile()
+		result, merr = m.Reconcile(context.TODO())
 		if merr != nil {
 			err = merr.Error()
 			switch merr.Type() {
