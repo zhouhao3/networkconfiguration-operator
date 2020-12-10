@@ -2,7 +2,7 @@ package device
 
 import (
 	"context"
-	"errors"
+	"fmt"
 
 	"github.com/metal3-io/networkconfiguration-operator/api/v1alpha1"
 	"sigs.k8s.io/controller-runtime/pkg/client"
@@ -12,8 +12,8 @@ import (
 type PortState string
 
 const (
-	// NotConfigured ...
-	NotConfigured PortState = "not configured"
+	// None ...
+	None PortState = "none"
 
 	// Configuring ...
 	Configuring PortState = "configuring"
@@ -35,13 +35,15 @@ const (
 )
 
 // New ...
-func New(client *client.Client, deviceRef *v1alpha1.DeviceRef) (Device, error) {
+func New(ctx context.Context, client *client.Client, deviceRef *v1alpha1.DeviceRef) (device Device, err error) {
 	switch deviceRef.Kind {
 	case "Switch":
-		return newSwitch(client, deviceRef)
+		device, err = newSwitch(ctx, client, deviceRef)
+	default:
+		err = fmt.Errorf("no device for the kind(%s)", deviceRef.Kind)
 	}
 
-	return nil, errors.New("")
+	return
 }
 
 // Device ...

@@ -8,11 +8,11 @@ import (
 )
 
 // newSwitch ...
-func newSwitch(client *client.Client, deviceRef *v1alpha1.DeviceRef) (*Switch, error) {
+func newSwitch(ctx context.Context, client *client.Client, deviceRef *v1alpha1.DeviceRef) (*Switch, error) {
 	var instance interface{}
 
 	// Get SwitchDevice CR
-	instance, err := deviceRef.Fetch(client)
+	instance, err := deviceRef.Fetch(ctx, client)
 	if err != nil {
 		return nil, err
 	}
@@ -41,5 +41,5 @@ func (s *Switch) DeConfigurePort(ctx context.Context, port *v1alpha1.NetworkBind
 
 // PortState return the port's state of the device
 func (s *Switch) PortState(ctx context.Context, portID string) PortState {
-	return NotConfigured
+	return None
 }

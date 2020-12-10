@@ -108,6 +108,7 @@ func (r *NetworkBindingReconciler) Reconcile(req ctrl.Request) (result ctrl.Resu
 
 	// On object delete
 	case !instance.DeletionTimestamp.IsZero():
+		// Set instance's state to `Deleting`
 		instance.SetState(v1alpha1.NetworkBindingDeleting)
 		// Reconcile state
 		result, merr = m.Reconcile(context.TODO())
@@ -123,7 +124,7 @@ func (r *NetworkBindingReconciler) Reconcile(req ctrl.Request) (result ctrl.Resu
 	}
 
 	// Update object
-	err = r.Update(context.Background(), instance)
+	err = r.Update(context.TODO(), instance)
 
 	return ctrl.Result{}, err
 }
