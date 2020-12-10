@@ -34,7 +34,7 @@ func (r *NetworkBindingReconciler) creatingHandler(ctx context.Context, info *ma
 	i := instance.(*v1alpha1.NetworkBinding)
 
 	// Initialize device
-	dev, err := device.New(&info.Client, &i.Spec.Port.DeviceRef)
+	dev, err := device.New(ctx, &info.Client, &i.Spec.Port.DeviceRef)
 	if err != nil {
 		return v1alpha1.NetworkBindingCreating, ctrl.Result{Requeue: true, RequeueAfter: time.Second * 10}, err
 	}
@@ -59,7 +59,7 @@ func (r *NetworkBindingReconciler) creatingHandler(ctx context.Context, info *ma
 func (r *NetworkBindingReconciler) configuringHandler(ctx context.Context, info *machine.Information, instance interface{}) (v1alpha1.StateType, ctrl.Result, error) {
 	i := instance.(*v1alpha1.NetworkBinding)
 
-	dev, err := device.New(&info.Client, &i.Spec.Port.DeviceRef)
+	dev, err := device.New(ctx, &info.Client, &i.Spec.Port.DeviceRef)
 	if err != nil {
 		return v1alpha1.NetworkBindingConfiguring, ctrl.Result{Requeue: true, RequeueAfter: time.Second * 10}, err
 	}
@@ -71,7 +71,7 @@ func (r *NetworkBindingReconciler) configuringHandler(ctx context.Context, info 
 
 	case device.NotConfigured, device.Deleted, device.ConfigureFailed:
 		// Fetch network configuration
-		networkConfiguration, err := i.Spec.NetworkConfigurationRef.Fetch(info.Client)
+		networkConfiguration, err := i.Spec.NetworkConfigurationRef.Fetch(ctx, info.Client)
 		if err != nil {
 			return v1alpha1.NetworkBindingConfiguring, ctrl.Result{Requeue: true, RequeueAfter: time.Second * 10}, err
 		}
@@ -98,7 +98,7 @@ func (r *NetworkBindingReconciler) configuredHandler(ctx context.Context, info *
 func (r *NetworkBindingReconciler) deletingHandler(ctx context.Context, info *machine.Information, instance interface{}) (v1alpha1.StateType, ctrl.Result, error) {
 	i := instance.(*v1alpha1.NetworkBinding)
 
-	dev, err := device.New(&info.Client, &i.Spec.Port.DeviceRef)
+	dev, err := device.New(ctx, &info.Client, &i.Spec.Port.DeviceRef)
 	if err != nil {
 		return v1alpha1.NetworkBindingDeleting, ctrl.Result{Requeue: true, RequeueAfter: time.Second * 10}, err
 	}

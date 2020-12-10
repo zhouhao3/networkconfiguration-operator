@@ -8,11 +8,11 @@ import (
 )
 
 // newSwitch ...
-func newSwitch(client *client.Client, deviceRef *v1alpha1.DeviceRef) (*Switch, error) {
+func newSwitch(ctx context.Context, client *client.Client, deviceRef *v1alpha1.DeviceRef) (*Switch, error) {
 	var instance interface{}
 
 	// Get SwitchDevice CR
-	instance, err := deviceRef.Fetch(client)
+	instance, err := deviceRef.Fetch(ctx, client)
 	if err != nil {
 		return nil, err
 	}

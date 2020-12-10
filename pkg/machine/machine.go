@@ -2,7 +2,7 @@ package machine
 
 import (
 	"context"
-	"errors"
+	"fmt"
 	"time"
 
 	"github.com/go-logr/logr"
@@ -84,7 +84,7 @@ func (m *Machine) Reconcile(ctx context.Context) (ctrl.Result, Error) {
 	if !exist {
 		return ctrl.Result{}, &machineError{
 			errType: ReconcileError,
-			err:     errors.New("no handler for the state"),
+			err:     fmt.Errorf("no handler for the state(%v)", m.instance.GetState()),
 		}
 	}
 

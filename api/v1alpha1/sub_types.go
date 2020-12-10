@@ -19,20 +19,17 @@ type NetworkConfigurationRef struct {
 }
 
 // Fetch the instance
-func (n *NetworkConfigurationRef) Fetch(client client.Client) (*NetworkConfiguration, error) {
-	var instance NetworkConfiguration
-	err := client.Get(
+func (n *NetworkConfigurationRef) Fetch(ctx context.Context, client client.Client) (instance *NetworkConfiguration, err error) {
+	err = client.Get(
 		context.Background(),
 		types.NamespacedName{
 			Name:      n.Name,
 			Namespace: n.NameSpace,
 		},
-		&instance,
+		instance,
 	)
-	if err != nil {
-		return nil, err
-	}
-	return &instance, nil
+
+	return
 }
 
 // NetworkBindingRef is the reference for NetworkBinding CR
@@ -42,20 +39,17 @@ type NetworkBindingRef struct {
 }
 
 // Fetch the instance
-func (n *NetworkBindingRef) Fetch(client client.Client) (*NetworkBinding, error) {
-	var instance NetworkBinding
-	err := client.Get(
-		context.Background(),
+func (n *NetworkBindingRef) Fetch(ctx context.Context, client client.Client) (instance *NetworkBinding, err error) {
+	err = client.Get(
+		ctx,
 		types.NamespacedName{
 			Name:      n.Name,
 			Namespace: n.NameSpace,
 		},
-		&instance,
+		instance,
 	)
-	if err != nil {
-		return nil, err
-	}
-	return &instance, nil
+
+	return
 }
 
 // DeviceRef is the reference for Device CR
@@ -66,25 +60,22 @@ type DeviceRef struct {
 }
 
 // Fetch the instance
-func (d *DeviceRef) Fetch(client *client.Client) (interface{}, error) {
+func (d *DeviceRef) Fetch(ctx context.Context, client *client.Client) (instance interface{}, err error) {
 	switch d.Kind {
 	case "Switch":
-		var instance Switch
-		err := (*client).Get(
-			context.Background(),
+		err = (*client).Get(
+			ctx,
 			types.NamespacedName{
 				Name:      d.Name,
 				Namespace: d.NameSpace,
 			},
-			&instance,
+			instance.(*Switch),
 		)
-		if err != nil {
-			return nil, err
-		}
-		return instance, nil
+	default:
+		err = errors.New("no instance for the ref")
 	}
 
-	return nil, errors.New("can't find instance for the kind")
+	return
 }
 
 // NICHint ...
