@@ -36,6 +36,14 @@ const (
 
 // New ...
 func New(ctx context.Context, client *client.Client, deviceRef *v1alpha1.DeviceRef) (device Device, err error) {
+	// Deal possible panic
+	defer func() {
+		err := recover()
+		if err != nil {
+			err = fmt.Errorf("%v", err)
+		}
+	}()
+
 	switch deviceRef.Kind {
 	case "Switch":
 		device, err = newSwitch(ctx, client, deviceRef)

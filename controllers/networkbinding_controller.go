@@ -76,7 +76,7 @@ func (r *NetworkBindingReconciler) Reconcile(req ctrl.Request) (result ctrl.Resu
 		},
 	)
 
-	var merr machine.Error
+	var merr *machine.Error
 	switch {
 	// On object created
 	case instance.DeletionTimestamp.IsZero() && len(instance.Finalizers) == 0:

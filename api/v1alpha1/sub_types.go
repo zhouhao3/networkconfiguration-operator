@@ -84,43 +84,44 @@ type NICHint struct {
 	SmartNIC bool `json:"smartNIC,omitempty"`
 }
 
-// Assess nicHints and return a score.
-func (n NICHint) Assess(nicHint NICHint) float64 {
-	rsv := reflect.ValueOf(n)
-	rav := reflect.ValueOf(nicHint)
+// Assess capability and return a score.
+func (hint NICHint) Assess(capability NICHint) float64 {
+
+	hintV := reflect.ValueOf(hint)
+	capabilityV := reflect.ValueOf(capability)
 
 	score := 0.0
-	for i := 0; i < rsv.NumField(); i++ {
-		switch rsv.Field(i).Kind() {
+	for i := 0; i < hintV.NumField(); i++ {
+		switch hintV.Field(i).Kind() {
 		case reflect.Bool:
-			if rsv.Field(i).Bool() && !rav.Field(i).Bool() {
+			if hintV.Field(i).Bool() && !capabilityV.Field(i).Bool() {
 				return 0
-			} else if rsv.Field(i).Bool() == rav.Field(i).Bool() {
+			} else if hintV.Field(i).Bool() == capabilityV.Field(i).Bool() {
 				score += 10
 			}
 
 		case reflect.String:
-			if rsv.Field(i).String() != rav.Field(i).String() {
+			if hintV.Field(i).String() != capabilityV.Field(i).String() {
 				return 0
 			}
 
 		case reflect.Int, reflect.Int8, reflect.Int16, reflect.Int32, reflect.Int64:
-			if rsv.Field(i).Int() > rav.Field(i).Int() {
+			if hintV.Field(i).Int() > capabilityV.Field(i).Int() {
 				return 0
 			}
-			score += float64(rsv.Field(i).Int()) / float64(rav.Field(i).Int()) * 100
+			score += float64(hintV.Field(i).Int()) / float64(capabilityV.Field(i).Int()) * 100
 
 		case reflect.Uint, reflect.Uint8, reflect.Uint16, reflect.Uint32, reflect.Uint64:
-			if rsv.Field(i).Uint() > rav.Field(i).Uint() {
+			if hintV.Field(i).Uint() > capabilityV.Field(i).Uint() {
 				return 0
 			}
-			score += float64(rsv.Field(i).Uint()) / float64(rav.Field(i).Uint()) * 100
+			score += float64(hintV.Field(i).Uint()) / float64(capabilityV.Field(i).Uint()) * 100
 
 		case reflect.Float32, reflect.Float64:
-			if rsv.Field(i).Float() > rav.Field(i).Float() {
+			if hintV.Field(i).Float() > capabilityV.Field(i).Float() {
 				return 0
 			}
-			score += rsv.Field(i).Float() / rav.Field(i).Float() * 100
+			score += hintV.Field(i).Float() / capabilityV.Field(i).Float() * 100
 		}
 	}
 

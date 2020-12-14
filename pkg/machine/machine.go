@@ -50,22 +50,19 @@ const (
 )
 
 // Error include error type and error message from state machine
-type Error interface {
-	Type() ErrorType
-	Error() error
-}
-
-type machineError struct {
+type Error struct {
 	errType ErrorType
 	err     error
 }
 
-func (me *machineError) Type() ErrorType {
-	return me.errType
+// Type return error's type
+func (e *Error) Type() ErrorType {
+	return e.errType
 }
 
-func (me *machineError) Error() error {
-	return me.err
+// Error return error itself
+func (e *Error) Error() error {
+	return e.err
 }
 
 // New a state machine
@@ -79,23 +76,44 @@ func New(info *Information, instance Instance, handlers *Handlers) Machine {
 }
 
 // Reconcile state machine
-func (m *Machine) Reconcile(ctx context.Context) (ctrl.Result, Error) {
+func (m *Machine) Reconcile(ctx context.Context) (result ctrl.Result, merr *Error) {
+	// Deal possible panic
+	defer func() {
+		err := recover()
+		if err != nil {
+			merr = &Error{
+				errType: HandlerError,
+				err:     fmt.Errorf("handler panic: %v", err),
+			}
+		}
+	}()
+
+	// There are any handler in handlers?
+	if m.handlers == nil {
+		return result, &Error{
+			errType: ReconcileError,
+			err:     fmt.Errorf("haven't any handler"),
+		}
+	}
+
+	// Check the state's handler exist or not
 	handler, exist := (*m.handlers)[m.instance.GetState()]
 	if !exist {
-		return ctrl.Result{}, &machineError{
+		return result, &Error{
 			errType: ReconcileError,
 			err:     fmt.Errorf("no handler for the state(%v)", m.instance.GetState()),
 		}
 	}
 
+	// Call handler
 	nextState, result, err := handler(ctx, m.info, m.instance)
 	m.instance.SetState(nextState)
 	if err != nil {
-		return result, &machineError{
+		merr = &Error{
 			errType: HandlerError,
 			err:     err,
 		}
 	}
 
-	return result, nil
+	return result, merr
 }
