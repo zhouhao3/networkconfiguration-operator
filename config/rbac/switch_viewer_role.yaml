@@ -5,7 +5,7 @@ metadata:
   name: switch-viewer-role
 rules:
 - apiGroups:
-  - metal3.io.my.domain
+  - metal3.io
   resources:
   - switches
   verbs:
@@ -13,7 +13,7 @@ rules:
   - list
   - watch
 - apiGroups:
-  - metal3.io.my.domain
+  - metal3.io
   resources:
   - switches/status
   verbs:

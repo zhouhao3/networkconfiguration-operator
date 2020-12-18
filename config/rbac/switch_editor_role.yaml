@@ -5,7 +5,7 @@ metadata:
   name: switch-editor-role
 rules:
 - apiGroups:
-  - metal3.io.my.domain
+  - metal3.io
   resources:
   - switches
   verbs:
@@ -17,7 +17,7 @@ rules:
   - update
   - watch
 - apiGroups:
-  - metal3.io.my.domain
+  - metal3.io
   resources:
   - switches/status
   verbs:

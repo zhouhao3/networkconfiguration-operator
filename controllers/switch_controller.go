@@ -34,8 +34,8 @@ type SwitchReconciler struct {
 	Scheme *runtime.Scheme
 }
 
-// +kubebuilder:rbac:groups=metal3.io.my.domain,resources=switches,verbs=get;list;watch;create;update;patch;delete
-// +kubebuilder:rbac:groups=metal3.io.my.domain,resources=switches/status,verbs=get;update;patch
+// +kubebuilder:rbac:groups=metal3.io,resources=switches,verbs=get;list;watch;create;update;patch;delete
+// +kubebuilder:rbac:groups=metal3.io,resources=switches/status,verbs=get;update;patch
 
 // Reconcile ...
 func (r *SwitchReconciler) Reconcile(req ctrl.Request) (ctrl.Result, error) {

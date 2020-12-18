@@ -6,9 +6,9 @@ metadata:
   annotations:
     controller-gen.kubebuilder.io/version: (devel)
   creationTimestamp: null
-  name: switches.metal3.io.my.domain
+  name: switches.metal3.io
 spec:
-  group: metal3.io.my.domain
+  group: metal3.io
   names:
     kind: Switch
     listKind: SwitchList

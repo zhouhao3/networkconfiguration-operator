@@ -34,8 +34,8 @@ type NetworkConfigurationReconciler struct {
 	Scheme *runtime.Scheme
 }
 
-// +kubebuilder:rbac:groups=metal3.io.my.domain,resources=networkconfigurations,verbs=get;list;watch;create;update;patch;delete
-// +kubebuilder:rbac:groups=metal3.io.my.domain,resources=networkconfigurations/status,verbs=get;update;patch
+// +kubebuilder:rbac:groups=metal3.io,resources=networkconfigurations,verbs=get;list;watch;create;update;patch;delete
+// +kubebuilder:rbac:groups=metal3.io,resources=networkconfigurations/status,verbs=get;update;patch
 
 // Reconcile ...
 func (r *NetworkConfigurationReconciler) Reconcile(req ctrl.Request) (ctrl.Result, error) {

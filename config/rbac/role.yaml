@@ -7,7 +7,7 @@ metadata:
   name: manager-role
 rules:
 - apiGroups:
-  - metal3.io.my.domain
+  - metal3.io
   resources:
   - networkbindings
   verbs:
@@ -19,7 +19,7 @@ rules:
   - update
   - watch
 - apiGroups:
-  - metal3.io.my.domain
+  - metal3.io
   resources:
   - networkbindings/status
   verbs:
@@ -27,7 +27,7 @@ rules:
   - patch
   - update
 - apiGroups:
-  - metal3.io.my.domain
+  - metal3.io
   resources:
   - networkconfigurations
   verbs:
@@ -39,7 +39,7 @@ rules:
   - update
   - watch
 - apiGroups:
-  - metal3.io.my.domain
+  - metal3.io
   resources:
   - networkconfigurations/status
   verbs:
@@ -47,7 +47,7 @@ rules:
   - patch
   - update
 - apiGroups:
-  - metal3.io.my.domain
+  - metal3.io
   resources:
   - switches
   verbs:
@@ -59,7 +59,7 @@ rules:
   - update
   - watch
 - apiGroups:
-  - metal3.io.my.domain
+  - metal3.io
   resources:
   - switches/status
   verbs:

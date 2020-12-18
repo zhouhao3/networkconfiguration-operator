@@ -36,15 +36,8 @@ type NetworkBindingReconciler struct {
 	Scheme *runtime.Scheme
 }
 
-// +kubebuilder:rbac:groups=metal3.io.my.domain,resources=networkbindings,verbs=get;list;watch;create;update;patch;delete
-// +kubebuilder:rbac:groups=metal3.io.my.domain,resources=networkbindings/status,verbs=get;update;patch
-
-// SetupWithManager ...
-func (r *NetworkBindingReconciler) SetupWithManager(mgr ctrl.Manager) error {
-	return ctrl.NewControllerManagedBy(mgr).
-		For(&v1alpha1.NetworkBinding{}).
-		Complete(r)
-}
+// +kubebuilder:rbac:groups=metal3.io,resources=networkbindings,verbs=get;list;watch;create;update;patch;delete
+// +kubebuilder:rbac:groups=metal3.io,resources=networkbindings/status,verbs=get;update;patch
 
 // Reconcile ...
 func (r *NetworkBindingReconciler) Reconcile(req ctrl.Request) (result ctrl.Result, err error) {
@@ -127,4 +120,11 @@ func (r *NetworkBindingReconciler) Reconcile(req ctrl.Request) (result ctrl.Resu
 	err = r.Update(context.TODO(), instance)
 
 	return ctrl.Result{}, err
+}
+
+// SetupWithManager ...
+func (r *NetworkBindingReconciler) SetupWithManager(mgr ctrl.Manager) error {
+	return ctrl.NewControllerManagedBy(mgr).
+		For(&v1alpha1.NetworkBinding{}).
+		Complete(r)
 }
