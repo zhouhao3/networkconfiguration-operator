@@ -17,6 +17,7 @@ limitations under the License.
 package v1alpha1
 
 import (
+	corev1 "k8s.io/api/core/v1"
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
 )
 
@@ -46,27 +47,27 @@ type Switch struct {
 
 // SwitchSpec defines the desired state of Switch
 type SwitchSpec struct {
-	OS    string           `json:"os"`
-	IP    string           `json:"ip"`
-	MAC   string           `json:"mac"`
-	Ports []SwitchSpecPort `json:"ports,omitempty"`
+	OS     string                  `json:"os"`
+	IP     string                  `json:"ip"`
+	MAC    string                  `json:"mac"`
+	Secret *corev1.SecretReference `json:"secret"`
+	Ports  []SwitchSpecPort        `json:"ports,omitempty"`
 }
 
 // SwitchSpecPort ...
 type SwitchSpecPort struct {
-	PortID               string               `json:"portID"`
-	LagWith              string               `json:"lagWith,omitempty"`
-	PortConfigurationRef PortConfigurationRef `json:"portConfigurationRef"`
+	PortID string `json:"portID,omitempty"`
+
+	Disabled bool `json:"disabled,omitempty"`
+
+	TrunkDisabled bool `json:"trunkDisable,omitempty"`
+
+	// +kubebuilder:validation:Pattern=`([0-9]{1,})|([0-9]{1,}-[0-9]{1,})(,([0-9]{1,})|([0-9]{1,}-[0-9]{1,}))*`
+	VlanRange string `json:"vlanRange,omitempty"`
 }
 
 // SwitchStatus defines the observed state of Switch
 type SwitchStatus struct {
-	Ports []SwitchStatusPort `json:"ports,omitempty"`
-}
-
-// SwitchStatusPort ...
-type SwitchStatusPort struct {
-	PortID  string    `json:"portID,omitempty"`
-	LagWith string    `json:"lagWith,omitempty"`
-	State   StateType `json:"state,omitempty"`
+	// INSERT ADDITIONAL STATUS FIELD - define observed state of cluster
+	// Important: Run "make" to regenerate code after modifying this file
 }

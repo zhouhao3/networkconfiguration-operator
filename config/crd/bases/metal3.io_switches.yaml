@@ -46,53 +46,38 @@ spec:
                 items:
                   description: SwitchSpecPort ...
                   properties:
-                    lagWith:
-                      type: string
-                    portConfigurationRef:
-                      description: PortConfigurationRef is the reference for NetworkConfiguration
-                        CR
-                      properties:
-                        kind:
-                          enum:
-                          - SwitchPortConfiguration
-                          type: string
-                        name:
-                          type: string
-                        nameSpace:
-                          type: string
-                      required:
-                      - kind
-                      - name
-                      - nameSpace
-                      type: object
+                    disabled:
+                      type: boolean
                     portID:
                       type: string
-                  required:
-                  - portConfigurationRef
-                  - portID
+                    trunkDisable:
+                      type: boolean
+                    vlanRange:
+                      pattern: ([0-9]{1,})|([0-9]{1,}-[0-9]{1,})(,([0-9]{1,})|([0-9]{1,}-[0-9]{1,}))*
+                      type: string
                   type: object
                 type: array
+              secret:
+                description: SecretReference represents a Secret Reference. It has
+                  enough information to retrieve secret in any namespace
+                properties:
+                  name:
+                    description: Name is unique within a namespace to reference a
+                      secret resource.
+                    type: string
+                  namespace:
+                    description: Namespace defines the space within which the secret
+                      name must be unique.
+                    type: string
+                type: object
             required:
             - ip
             - mac
             - os
+            - secret
             type: object
           status:
             description: SwitchStatus defines the observed state of Switch
-            properties:
-              ports:
-                items:
-                  description: SwitchStatusPort ...
-                  properties:
-                    lagWith:
-                      type: string
-                    portID:
-                      type: string
-                    state:
-                      description: StateType is the type of .status.state
-                      type: string
-                  type: object
-                type: array
             type: object
         type: object
     served: true
