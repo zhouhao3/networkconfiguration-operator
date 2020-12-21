@@ -9,7 +9,7 @@ rules:
 - apiGroups:
   - metal3.io
   resources:
-  - networkbindings
+  - ports
   verbs:
   - create
   - delete
@@ -21,27 +21,7 @@ rules:
 - apiGroups:
   - metal3.io
   resources:
-  - networkbindings/status
-  verbs:
-  - get
-  - patch
-  - update
-- apiGroups:
-  - metal3.io
-  resources:
-  - networkconfigurations
-  verbs:
-  - create
-  - delete
-  - get
-  - list
-  - patch
-  - update
-  - watch
-- apiGroups:
-  - metal3.io
-  resources:
-  - networkconfigurations/status
+  - ports/status
   verbs:
   - get
   - patch
@@ -62,6 +42,26 @@ rules:
   - metal3.io
   resources:
   - switches/status
+  verbs:
+  - get
+  - patch
+  - update
+- apiGroups:
+  - metal3.io
+  resources:
+  - switchportconfigurations
+  verbs:
+  - create
+  - delete
+  - get
+  - list
+  - patch
+  - update
+  - watch
+- apiGroups:
+  - metal3.io
+  resources:
+  - switchportconfigurations/status
   verbs:
   - get
   - patch

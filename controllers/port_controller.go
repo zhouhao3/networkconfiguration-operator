@@ -26,26 +26,30 @@ import (
 	"sigs.k8s.io/controller-runtime/pkg/reconcile"
 
 	"github.com/metal3-io/networkconfiguration-operator/api/v1alpha1"
+	metal3iov1alpha1 "github.com/metal3-io/networkconfiguration-operator/api/v1alpha1"
 	"github.com/metal3-io/networkconfiguration-operator/pkg/machine"
 )
 
-// NetworkBindingReconciler reconciles a NetworkBinding object
-type NetworkBindingReconciler struct {
+// PortReconciler reconciles a Port object
+type PortReconciler struct {
 	client.Client
 	Log    logr.Logger
 	Scheme *runtime.Scheme
 }
 
-// +kubebuilder:rbac:groups=metal3.io,resources=networkbindings,verbs=get;list;watch;create;update;patch;delete
-// +kubebuilder:rbac:groups=metal3.io,resources=networkbindings/status,verbs=get;update;patch
+// +kubebuilder:rbac:groups=metal3.io,resources=ports,verbs=get;list;watch;create;update;patch;delete
+// +kubebuilder:rbac:groups=metal3.io,resources=ports/status,verbs=get;update;patch
 
 // Reconcile ...
-func (r *NetworkBindingReconciler) Reconcile(req ctrl.Request) (result ctrl.Result, err error) {
+func (r *PortReconciler) Reconcile(req ctrl.Request) (result ctrl.Result, err error) {
 	_ = context.Background()
-	_ = r.Log.WithValues("networkbinding", req.NamespacedName)
+	_ = r.Log.WithValues("port", req.NamespacedName)
+
+	_ = context.Background()
+	_ = r.Log.WithValues("Port", req.NamespacedName)
 
 	// Fetch the instance
-	instance := &v1alpha1.NetworkBinding{}
+	instance := &v1alpha1.Port{}
 	err = r.Get(context.TODO(), req.NamespacedName, instance)
 	if err != nil {
 		// Error reading the object - requeue the request
@@ -60,12 +64,12 @@ func (r *NetworkBindingReconciler) Reconcile(req ctrl.Request) (result ctrl.Resu
 		},
 		instance,
 		&machine.Handlers{
-			v1alpha1.NetworkBindingNone:        r.noneHandler,
-			v1alpha1.NetworkBindingCreating:    r.creatingHandler,
-			v1alpha1.NetworkBindingConfiguring: r.configuringHandler,
-			v1alpha1.NetworkBindingConfigured:  r.configuredHandler,
-			v1alpha1.NetworkBindingDeleting:    r.deletingHandler,
-			v1alpha1.NetworkBindingDeleted:     r.deletedHandler,
+			v1alpha1.PortNone:        r.noneHandler,
+			v1alpha1.PortCreating:    r.creatingHandler,
+			v1alpha1.PortConfiguring: r.configuringHandler,
+			v1alpha1.PortConfigured:  r.configuredHandler,
+			v1alpha1.PortDeleting:    r.deletingHandler,
+			v1alpha1.PortDeleted:     r.deletedHandler,
 		},
 	)
 
@@ -102,7 +106,7 @@ func (r *NetworkBindingReconciler) Reconcile(req ctrl.Request) (result ctrl.Resu
 	// On object delete
 	case !instance.DeletionTimestamp.IsZero():
 		// Set instance's state to `Deleting`
-		instance.SetState(v1alpha1.NetworkBindingDeleting)
+		instance.SetState(v1alpha1.PortDeleting)
 		// Reconcile state
 		result, merr = m.Reconcile(context.TODO())
 		if merr != nil {
@@ -123,8 +127,8 @@ func (r *NetworkBindingReconciler) Reconcile(req ctrl.Request) (result ctrl.Resu
 }
 
 // SetupWithManager ...
-func (r *NetworkBindingReconciler) SetupWithManager(mgr ctrl.Manager) error {
+func (r *PortReconciler) SetupWithManager(mgr ctrl.Manager) error {
 	return ctrl.NewControllerManagedBy(mgr).
-		For(&v1alpha1.NetworkBinding{}).
+		For(&metal3iov1alpha1.Port{}).
 		Complete(r)
 }

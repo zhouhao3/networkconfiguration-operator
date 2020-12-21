@@ -6,20 +6,20 @@ metadata:
   annotations:
     controller-gen.kubebuilder.io/version: (devel)
   creationTimestamp: null
-  name: networkbindings.metal3.io
+  name: ports.metal3.io
 spec:
   group: metal3.io
   names:
-    kind: NetworkBinding
-    listKind: NetworkBindingList
-    plural: networkbindings
-    singular: networkbinding
+    kind: Port
+    listKind: PortList
+    plural: ports
+    singular: port
   scope: Namespaced
   versions:
   - name: v1alpha1
     schema:
       openAPIV3Schema:
-        description: NetworkBinding is the Schema for the networkbindings API
+        description: Port is the Schema for the ports API
         properties:
           apiVersion:
             description: 'APIVersion defines the versioned schema of this representation
@@ -34,51 +34,52 @@ spec:
           metadata:
             type: object
           spec:
-            description: NetworkBindingSpec defines the desired state of NetworkBinding
+            description: PortSpec defines the desired state of Port
             properties:
-              networkConfigurationRef:
-                description: NetworkConfigurationRef is the reference for NetworkConfiguration
-                  CR
+              deviceRef:
+                description: DeviceRef is the reference for Device CR
                 properties:
+                  kind:
+                    enum:
+                    - Switch
+                    type: string
                   name:
                     type: string
                   nameSpace:
                     type: string
                 required:
+                - kind
                 - name
                 - nameSpace
                 type: object
-              port:
-                description: NetworkBindingSpecPort ...
+              lagWith:
+                type: string
+              portConfigurationRef:
+                description: PortConfigurationRef is the reference for NetworkConfiguration
+                  CR
                 properties:
-                  deviceRef:
-                    description: DeviceRef is the reference for Device CR
-                    properties:
-                      kind:
-                        type: string
-                      name:
-                        type: string
-                      nameSpace:
-                        type: string
-                    required:
-                    - kind
-                    - name
-                    - nameSpace
-                    type: object
-                  lagWith:
+                  kind:
+                    enum:
+                    - SwitchPortConfiguration
                     type: string
-                  portID:
+                  name:
+                    type: string
+                  nameSpace:
                     type: string
                 required:
-                - deviceRef
-                - portID
+                - kind
+                - name
+                - nameSpace
                 type: object
+              portID:
+                type: string
             required:
-            - networkConfigurationRef
-            - port
+            - deviceRef
+            - portConfigurationRef
+            - portID
             type: object
           status:
-            description: NetworkBindingStatus defines the observed state of NetworkBinding
+            description: PortStatus defines the observed state of Port
             properties:
               state:
                 description: StateType is the type of .status.state

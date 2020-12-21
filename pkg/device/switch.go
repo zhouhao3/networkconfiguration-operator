@@ -8,7 +8,7 @@ import (
 )
 
 // newSwitch ...
-func newSwitch(ctx context.Context, client *client.Client, deviceRef *v1alpha1.DeviceRef) (*Switch, error) {
+func newSwitch(ctx context.Context, client client.Client, deviceRef *v1alpha1.DeviceRef) (*Switch, error) {
 	var instance interface{}
 
 	// Get SwitchDevice CR
@@ -25,17 +25,17 @@ func newSwitch(ctx context.Context, client *client.Client, deviceRef *v1alpha1.D
 
 // Switch is a kind of network device
 type Switch struct {
-	client   *client.Client
+	client   client.Client
 	instance v1alpha1.Switch
 }
 
 // ConfigurePort set the network configure to the port
-func (s *Switch) ConfigurePort(ctx context.Context, networkConfiguration *v1alpha1.NetworkConfiguration, port *v1alpha1.NetworkBindingSpecPort) error {
+func (s *Switch) ConfigurePort(ctx context.Context, configuration interface{}, portID string) error {
 	return nil
 }
 
 // DeConfigurePort remove the network configure from the port
-func (s *Switch) DeConfigurePort(ctx context.Context, port *v1alpha1.NetworkBindingSpecPort) error {
+func (s *Switch) DeConfigurePort(ctx context.Context, portID string) error {
 	return nil
 }
 

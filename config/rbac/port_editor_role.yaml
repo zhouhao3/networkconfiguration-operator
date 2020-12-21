@@ -1,13 +1,13 @@
-# permissions for end users to edit networkconfigurations.
+# permissions for end users to edit ports.
 apiVersion: rbac.authorization.k8s.io/v1
 kind: ClusterRole
 metadata:
-  name: networkconfiguration-editor-role
+  name: port-editor-role
 rules:
 - apiGroups:
   - metal3.io
   resources:
-  - networkconfigurations
+  - ports
   verbs:
   - create
   - delete
@@ -19,6 +19,6 @@ rules:
 - apiGroups:
   - metal3.io
   resources:
-  - networkconfigurations/status
+  - ports/status
   verbs:
   - get

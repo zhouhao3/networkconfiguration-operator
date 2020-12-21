@@ -1,0 +1,24 @@
+# permissions for end users to edit switchportconfigurations.
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRole
+metadata:
+  name: switchportconfiguration-editor-role
+rules:
+- apiGroups:
+  - metal3.io
+  resources:
+  - switchportconfigurations
+  verbs:
+  - create
+  - delete
+  - get
+  - list
+  - patch
+  - update
+  - watch
+- apiGroups:
+  - metal3.io
+  resources:
+  - switchportconfigurations/status
+  verbs:
+  - get

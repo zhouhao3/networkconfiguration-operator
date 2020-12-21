@@ -35,7 +35,7 @@ const (
 )
 
 // New ...
-func New(ctx context.Context, client *client.Client, deviceRef *v1alpha1.DeviceRef) (device Device, err error) {
+func New(ctx context.Context, client client.Client, deviceRef *v1alpha1.DeviceRef) (device Device, err error) {
 	// Deal possible panic
 	defer func() {
 		err := recover()
@@ -57,10 +57,10 @@ func New(ctx context.Context, client *client.Client, deviceRef *v1alpha1.DeviceR
 // Device ...
 type Device interface {
 	// ConfigurePort set the network configure to the port
-	ConfigurePort(ctx context.Context, networkConfiguration *v1alpha1.NetworkConfiguration, port *v1alpha1.NetworkBindingSpecPort) error
+	ConfigurePort(ctx context.Context, configuration interface{}, portID string) error
 
 	// DeConfigurePort remove the network configure from the port
-	DeConfigurePort(ctx context.Context, port *v1alpha1.NetworkBindingSpecPort) error
+	DeConfigurePort(ctx context.Context, portID string) error
 
 	// PortState return the port's state of the device
 	PortState(ctx context.Context, portID string) PortState

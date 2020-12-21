@@ -27,20 +27,20 @@ import (
 	metal3iov1alpha1 "github.com/metal3-io/networkconfiguration-operator/api/v1alpha1"
 )
 
-// NetworkConfigurationReconciler reconciles a NetworkConfiguration object
-type NetworkConfigurationReconciler struct {
+// SwitchPortConfigurationReconciler reconciles a SwitchPortConfiguration object
+type SwitchPortConfigurationReconciler struct {
 	client.Client
 	Log    logr.Logger
 	Scheme *runtime.Scheme
 }
 
-// +kubebuilder:rbac:groups=metal3.io,resources=networkconfigurations,verbs=get;list;watch;create;update;patch;delete
-// +kubebuilder:rbac:groups=metal3.io,resources=networkconfigurations/status,verbs=get;update;patch
+// +kubebuilder:rbac:groups=metal3.io,resources=switchportconfigurations,verbs=get;list;watch;create;update;patch;delete
+// +kubebuilder:rbac:groups=metal3.io,resources=switchportconfigurations/status,verbs=get;update;patch
 
 // Reconcile ...
-func (r *NetworkConfigurationReconciler) Reconcile(req ctrl.Request) (ctrl.Result, error) {
+func (r *SwitchPortConfigurationReconciler) Reconcile(req ctrl.Request) (ctrl.Result, error) {
 	_ = context.Background()
-	_ = r.Log.WithValues("networkconfiguration", req.NamespacedName)
+	_ = r.Log.WithValues("switchportconfiguration", req.NamespacedName)
 
 	// your logic here
 
@@ -48,8 +48,8 @@ func (r *NetworkConfigurationReconciler) Reconcile(req ctrl.Request) (ctrl.Resul
 }
 
 // SetupWithManager ...
-func (r *NetworkConfigurationReconciler) SetupWithManager(mgr ctrl.Manager) error {
+func (r *SwitchPortConfigurationReconciler) SetupWithManager(mgr ctrl.Manager) error {
 	return ctrl.NewControllerManagedBy(mgr).
-		For(&metal3iov1alpha1.NetworkConfiguration{}).
+		For(&metal3iov1alpha1.SwitchPortConfiguration{}).
 		Complete(r)
 }

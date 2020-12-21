@@ -2,7 +2,7 @@ package v1alpha1
 
 import (
 	"context"
-	"errors"
+	"fmt"
 	"reflect"
 
 	"k8s.io/apimachinery/pkg/types"
@@ -12,19 +12,19 @@ import (
 // StateType is the type of .status.state
 type StateType string
 
-// NetworkConfigurationRef is the reference for NetworkConfiguration CR
-type NetworkConfigurationRef struct {
+// PortRef is the reference for NetworkBinding CR
+type PortRef struct {
 	Name      string `json:"name"`
 	NameSpace string `json:"nameSpace"`
 }
 
 // Fetch the instance
-func (n *NetworkConfigurationRef) Fetch(ctx context.Context, client client.Client) (instance *NetworkConfiguration, err error) {
+func (ref *PortRef) Fetch(ctx context.Context, client client.Client) (instance *Port, err error) {
 	err = client.Get(
-		context.Background(),
+		ctx,
 		types.NamespacedName{
-			Name:      n.Name,
-			Namespace: n.NameSpace,
+			Name:      ref.Name,
+			Namespace: ref.NameSpace,
 		},
 		instance,
 	)
@@ -32,47 +32,59 @@ func (n *NetworkConfigurationRef) Fetch(ctx context.Context, client client.Clien
 	return
 }
 
-// NetworkBindingRef is the reference for NetworkBinding CR
-type NetworkBindingRef struct {
-	Name      string `json:"name"`
+// PortConfigurationRef is the reference for NetworkConfiguration CR
+type PortConfigurationRef struct {
+	Name string `json:"name"`
+
 	NameSpace string `json:"nameSpace"`
+
+	// +kubebuilder:validation:Enum="SwitchPortConfiguration"
+	Kind string `json:"kind"`
 }
 
 // Fetch the instance
-func (n *NetworkBindingRef) Fetch(ctx context.Context, client client.Client) (instance *NetworkBinding, err error) {
-	err = client.Get(
-		ctx,
-		types.NamespacedName{
-			Name:      n.Name,
-			Namespace: n.NameSpace,
-		},
-		instance,
-	)
+func (ref *PortConfigurationRef) Fetch(ctx context.Context, client client.Client) (instance interface{}, err error) {
+	switch ref.Kind {
+	case "SwitchPortConfiguration":
+		err = client.Get(
+			ctx,
+			types.NamespacedName{
+				Name:      ref.Name,
+				Namespace: ref.NameSpace,
+			},
+			instance.(*SwitchPortConfiguration),
+		)
+	default:
+		err = fmt.Errorf("no instance for the ref")
+	}
 
 	return
 }
 
 // DeviceRef is the reference for Device CR
 type DeviceRef struct {
-	Name      string `json:"name"`
+	Name string `json:"name"`
+
 	NameSpace string `json:"nameSpace"`
-	Kind      string `json:"kind"`
+
+	// +kubebuilder:validation:Enum="Switch"
+	Kind string `json:"kind"`
 }
 
 // Fetch the instance
-func (d *DeviceRef) Fetch(ctx context.Context, client *client.Client) (instance interface{}, err error) {
-	switch d.Kind {
+func (ref *DeviceRef) Fetch(ctx context.Context, client client.Client) (instance interface{}, err error) {
+	switch ref.Kind {
 	case "Switch":
-		err = (*client).Get(
+		err = client.Get(
 			ctx,
 			types.NamespacedName{
-				Name:      d.Name,
-				Namespace: d.NameSpace,
+				Name:      ref.Name,
+				Namespace: ref.NameSpace,
 			},
 			instance.(*Switch),
 		)
 	default:
-		err = errors.New("no instance for the ref")
+		err = fmt.Errorf("no instance for the ref")
 	}
 
 	return

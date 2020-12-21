@@ -48,22 +48,27 @@ spec:
                   properties:
                     lagWith:
                       type: string
-                    networkConfigurationRef:
-                      description: NetworkConfigurationRef is the reference for NetworkConfiguration
+                    portConfigurationRef:
+                      description: PortConfigurationRef is the reference for NetworkConfiguration
                         CR
                       properties:
+                        kind:
+                          enum:
+                          - SwitchPortConfiguration
+                          type: string
                         name:
                           type: string
                         nameSpace:
                           type: string
                       required:
+                      - kind
                       - name
                       - nameSpace
                       type: object
                     portID:
                       type: string
                   required:
-                  - networkConfigurationRef
+                  - portConfigurationRef
                   - portID
                   type: object
                 type: array

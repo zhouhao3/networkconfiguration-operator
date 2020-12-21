@@ -70,12 +70,20 @@ func main() {
 		os.Exit(1)
 	}
 
-	if err = (&controllers.NetworkBindingReconciler{
+	if err = (&controllers.PortReconciler{
 		Client: mgr.GetClient(),
-		Log:    ctrl.Log.WithName("controllers").WithName("NetworkBinding"),
+		Log:    ctrl.Log.WithName("controllers").WithName("Port"),
 		Scheme: mgr.GetScheme(),
 	}).SetupWithManager(mgr); err != nil {
-		setupLog.Error(err, "unable to create controller", "controller", "NetworkBinding")
+		setupLog.Error(err, "unable to create controller", "controller", "Port")
+		os.Exit(1)
+	}
+	if err = (&controllers.SwitchPortConfigurationReconciler{
+		Client: mgr.GetClient(),
+		Log:    ctrl.Log.WithName("controllers").WithName("SwitchPortConfiguration"),
+		Scheme: mgr.GetScheme(),
+	}).SetupWithManager(mgr); err != nil {
+		setupLog.Error(err, "unable to create controller", "controller", "SwitchPortConfiguration")
 		os.Exit(1)
 	}
 	if err = (&controllers.SwitchReconciler{
@@ -84,14 +92,6 @@ func main() {
 		Scheme: mgr.GetScheme(),
 	}).SetupWithManager(mgr); err != nil {
 		setupLog.Error(err, "unable to create controller", "controller", "Switch")
-		os.Exit(1)
-	}
-	if err = (&controllers.NetworkConfigurationReconciler{
-		Client: mgr.GetClient(),
-		Log:    ctrl.Log.WithName("controllers").WithName("NetworkConfiguration"),
-		Scheme: mgr.GetScheme(),
-	}).SetupWithManager(mgr); err != nil {
-		setupLog.Error(err, "unable to create controller", "controller", "NetworkConfiguration")
 		os.Exit(1)
 	}
 	// +kubebuilder:scaffold:builder

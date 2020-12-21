@@ -21,31 +21,31 @@ import (
 )
 
 func init() {
-	SchemeBuilder.Register(&NetworkConfiguration{}, &NetworkConfigurationList{})
+	SchemeBuilder.Register(&SwitchPortConfiguration{}, &SwitchPortConfigurationList{})
 }
 
 // +kubebuilder:object:root=true
 
-// NetworkConfigurationList contains a list of NetworkConfiguration
-type NetworkConfigurationList struct {
-	metav1.TypeMeta `json:",inline"`
-	metav1.ListMeta `json:"metadata,omitempty"`
-	Items           []NetworkConfiguration `json:"items"`
-}
-
-// +kubebuilder:object:root=true
-
-// NetworkConfiguration is the Schema for the networkconfigurations API
-type NetworkConfiguration struct {
+// SwitchPortConfiguration is the Schema for the switchportconfigurations API
+type SwitchPortConfiguration struct {
 	metav1.TypeMeta   `json:",inline"`
 	metav1.ObjectMeta `json:"metadata,omitempty"`
 
-	Spec   NetworkConfigurationSpec   `json:"spec,omitempty"`
-	Status NetworkConfigurationStatus `json:"status,omitempty"`
+	Spec   SwitchPortConfigurationSpec   `json:"spec,omitempty"`
+	Status SwitchPortConfigurationStatus `json:"status,omitempty"`
 }
 
-// NetworkConfigurationSpec defines the desired state of NetworkConfiguration
-type NetworkConfigurationSpec struct {
+// +kubebuilder:object:root=true
+
+// SwitchPortConfigurationList contains a list of SwitchPortConfiguration
+type SwitchPortConfigurationList struct {
+	metav1.TypeMeta `json:",inline"`
+	metav1.ListMeta `json:"metadata,omitempty"`
+	Items           []SwitchPortConfiguration `json:"items"`
+}
+
+// SwitchPortConfigurationSpec defines the desired state of SwitchPortConfiguration
+type SwitchPortConfigurationSpec struct {
 	// +kubebuilder:validation:MaxItems=10
 	ACLs []ACL `json:"acls,omitempty"`
 
@@ -56,8 +56,6 @@ type NetworkConfigurationSpec struct {
 
 	// +kubebuilder:validation:Enum="lag";"mlag"
 	LinkAggregationType string `json:"linkAggregationType,omitempty"`
-
-	NICHint *NICHint `json:"nicHint,omitempty"`
 }
 
 // ACL ...
@@ -82,7 +80,8 @@ type ACL struct {
 	DesPortRange string `json:"desPortRange,omitempty"`
 }
 
-// NetworkConfigurationStatus defines the observed state of NetworkConfiguration
-type NetworkConfigurationStatus struct {
-	NetworkBindingRefs []NetworkBindingRef `json:"networkBindingRefs,omitempty"`
+// SwitchPortConfigurationStatus defines the observed state of SwitchPortConfiguration
+type SwitchPortConfigurationStatus struct {
+	// INSERT ADDITIONAL STATUS FIELD - define observed state of cluster
+	// Important: Run "make" to regenerate code after modifying this file
 }

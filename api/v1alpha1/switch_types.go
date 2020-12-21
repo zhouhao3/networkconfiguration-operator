@@ -54,9 +54,9 @@ type SwitchSpec struct {
 
 // SwitchSpecPort ...
 type SwitchSpecPort struct {
-	PortID                  string                  `json:"portID"`
-	LagWith                 string                  `json:"lagWith,omitempty"`
-	NetworkConfigurationRef NetworkConfigurationRef `json:"networkConfigurationRef"`
+	PortID               string               `json:"portID"`
+	LagWith              string               `json:"lagWith,omitempty"`
+	PortConfigurationRef PortConfigurationRef `json:"portConfigurationRef"`
 }
 
 // SwitchStatus defines the observed state of Switch
