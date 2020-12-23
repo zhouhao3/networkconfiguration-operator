@@ -93,8 +93,6 @@ spec:
                   type: object
                 maxItems: 3
                 type: array
-            required:
-            - trunk
             type: object
           status:
             description: SwitchPortConfigurationStatus defines the observed state

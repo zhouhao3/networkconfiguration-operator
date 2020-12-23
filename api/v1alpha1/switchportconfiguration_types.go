@@ -29,7 +29,7 @@ type SwitchPortConfigurationSpec struct {
 	Vlans []VLAN `json:"vlans,omitempty"`
 	// The untagged VLAN ID
 	VLANID VLANID `json:"vlanId,omitempty"`
-	Trunk  bool   `json:"trunk, omitempty"`
+	Trunk  bool   `json:"trunk,omitempty"`
 }
 
 // ACL ...
