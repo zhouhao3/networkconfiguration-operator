@@ -72,22 +72,49 @@ spec:
                   type: object
                 maxItems: 10
                 type: array
-              linkAggregationType:
-                enum:
-                - lag
-                - mlag
-                type: string
-              untaggedVLAN:
-                type: string
+              trunk:
+                type: boolean
+              vlanId:
+                description: The untagged VLAN ID
+                format: int32
+                type: integer
               vlans:
                 items:
-                  type: string
+                  description: VLAN represents the name and ID of a VLAN
+                  properties:
+                    id:
+                      description: VLANID ...
+                      format: int32
+                      type: integer
+                    name:
+                      type: string
+                  required:
+                  - id
+                  type: object
                 maxItems: 3
                 type: array
+            required:
+            - trunk
             type: object
           status:
             description: SwitchPortConfigurationStatus defines the observed state
               of SwitchPortConfiguration
+            properties:
+              portRefs:
+                items:
+                  description: PortRef is the reference for NetworkBinding CR
+                  properties:
+                    name:
+                      type: string
+                    nameSpace:
+                      type: string
+                  required:
+                  - name
+                  - nameSpace
+                  type: object
+                type: array
+            required:
+            - portRefs
             type: object
         type: object
     served: true

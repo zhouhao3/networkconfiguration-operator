@@ -17,44 +17,123 @@ limitations under the License.
 package v1alpha1
 
 import (
+	"context"
+	"fmt"
+
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
+	"k8s.io/apimachinery/pkg/types"
+	"sigs.k8s.io/controller-runtime/pkg/client"
 )
 
-func init() {
-	SchemeBuilder.Register(&Port{}, &PortList{})
+// StateType is the type of .status.state
+type StateType string
+
+// NicHint ...
+type NicHint struct {
+	Name     string `json:"name"`
+	SmartNic bool   `json:"smartNic"`
 }
 
-// +kubebuilder:object:root=true
-
-// Port is the Schema for the ports API
-type Port struct {
-	metav1.TypeMeta   `json:",inline"`
-	metav1.ObjectMeta `json:"metadata,omitempty"`
-
-	Spec   PortSpec   `json:"spec,omitempty"`
-	Status PortStatus `json:"status,omitempty"`
+// PortRef is the reference for NetworkBinding CR
+type PortRef struct {
+	Name      string `json:"name"`
+	NameSpace string `json:"nameSpace"`
 }
 
-// +kubebuilder:object:root=true
+// Fetch the instance
+func (ref *PortRef) Fetch(ctx context.Context, client client.Client) (instance *Port, err error) {
+	err = client.Get(
+		ctx,
+		types.NamespacedName{
+			Name:      ref.Name,
+			Namespace: ref.NameSpace,
+		},
+		instance,
+	)
 
-// PortList contains a list of Port
-type PortList struct {
-	metav1.TypeMeta `json:",inline"`
-	metav1.ListMeta `json:"metadata,omitempty"`
-	Items           []Port `json:"items"`
+	return
 }
 
 // PortSpec defines the desired state of Port
 type PortSpec struct {
 	PortConfigurationRef PortConfigurationRef `json:"portConfigurationRef"`
 	PortID               string               `json:"portID"`
-	LagWith              string               `json:"lagWith,omitempty"`
 	DeviceRef            DeviceRef            `json:"deviceRef"`
+	SmartNic             bool                 `json:"smartNic"`
+}
+
+// PortConfigurationRef is the reference for PortConfiguration CR
+type PortConfigurationRef struct {
+	Name string `json:"name"`
+
+	NameSpace string `json:"nameSpace"`
+
+	Kind string `json:"kind"`
+}
+
+// Fetch the instance
+func (ref *PortConfigurationRef) Fetch(ctx context.Context, client client.Client) (instance interface{}, err error) {
+	switch ref.Kind {
+	case "SwitchPortConfiguration":
+		err = client.Get(
+			ctx,
+			types.NamespacedName{
+				Name:      ref.Name,
+				Namespace: ref.NameSpace,
+			},
+			instance.(*SwitchPortConfiguration),
+		)
+	default:
+		err = fmt.Errorf("no instance for the ref")
+	}
+
+	return
+}
+
+// DeviceRef is the reference for Device CR
+type DeviceRef struct {
+	Name string `json:"name"`
+
+	NameSpace string `json:"nameSpace"`
+
+	// +kubebuilder:validation:Enum="Switch"
+	Kind string `json:"kind"`
+}
+
+// Fetch the instance
+func (ref *DeviceRef) Fetch(ctx context.Context, client client.Client) (instance interface{}, err error) {
+	switch ref.Kind {
+	case "Switch":
+		err = client.Get(
+			ctx,
+			types.NamespacedName{
+				Name:      ref.Name,
+				Namespace: ref.NameSpace,
+			},
+			instance.(*Switch),
+		)
+	default:
+		err = fmt.Errorf("no instance for the ref")
+	}
+
+	return
+}
+
+// VLANID ...
+type VLANID int32
+
+// VLAN represents the name and ID of a VLAN
+type VLAN struct {
+	ID VLANID `json:"id"`
+
+	Name string `json:"name,omitempty"`
 }
 
 // PortStatus defines the observed state of Port
 type PortStatus struct {
-	State StateType `json:"state,omitempty"`
+	State                StateType            `json:"state,omitempty"`
+	PortConfigurationRef PortConfigurationRef `json:"portConfigurationRef"`
+	VLANs                []VLAN               `json:"vlans"`
 }
 
 const (
@@ -85,4 +164,28 @@ func (n *Port) GetState() StateType {
 // SetState ...
 func (n *Port) SetState(state StateType) {
 	n.Status.State = state
+}
+
+// +kubebuilder:object:root=true
+
+// Port is the Schema for the ports API
+type Port struct {
+	metav1.TypeMeta   `json:",inline"`
+	metav1.ObjectMeta `json:"metadata,omitempty"`
+
+	Spec   PortSpec   `json:"spec,omitempty"`
+	Status PortStatus `json:"status,omitempty"`
+}
+
+// +kubebuilder:object:root=true
+
+// PortList contains a list of Port
+type PortList struct {
+	metav1.TypeMeta `json:",inline"`
+	metav1.ListMeta `json:"metadata,omitempty"`
+	Items           []Port `json:"items"`
+}
+
+func init() {
+	SchemeBuilder.Register(&Port{}, &PortList{})
 }
