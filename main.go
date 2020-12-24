@@ -78,22 +78,6 @@ func main() {
 		setupLog.Error(err, "unable to create controller", "controller", "Port")
 		os.Exit(1)
 	}
-	if err = (&controllers.SwitchPortConfigurationReconciler{
-		Client: mgr.GetClient(),
-		Log:    ctrl.Log.WithName("controllers").WithName("SwitchPortConfiguration"),
-		Scheme: mgr.GetScheme(),
-	}).SetupWithManager(mgr); err != nil {
-		setupLog.Error(err, "unable to create controller", "controller", "SwitchPortConfiguration")
-		os.Exit(1)
-	}
-	if err = (&controllers.SwitchReconciler{
-		Client: mgr.GetClient(),
-		Log:    ctrl.Log.WithName("controllers").WithName("Switch"),
-		Scheme: mgr.GetScheme(),
-	}).SetupWithManager(mgr); err != nil {
-		setupLog.Error(err, "unable to create controller", "controller", "Switch")
-		os.Exit(1)
-	}
 	// +kubebuilder:scaffold:builder
 
 	setupLog.Info("starting manager")
