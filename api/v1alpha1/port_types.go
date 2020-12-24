@@ -28,13 +28,15 @@ import (
 // StateType is the type of .status.state
 type StateType string
 
-// NicHint ...
+// NicHint describes the requirements for the network card
 type NicHint struct {
-	Name     string `json:"name"`
-	SmartNic bool   `json:"smartNic"`
+	// The name of the network card for this NicHint
+	Name string `json:"name"`
+	// True if smart network card is required, false otherwise.
+	SmartNic bool `json:"smartNic"`
 }
 
-// PortRef is the reference for NetworkBinding CR
+// PortRef is the reference for Port CR
 type PortRef struct {
 	Name      string `json:"name"`
 	NameSpace string `json:"nameSpace"`
@@ -56,10 +58,14 @@ func (ref *PortRef) Fetch(ctx context.Context, client client.Client) (instance *
 
 // PortSpec defines the desired state of Port
 type PortSpec struct {
+	// Reference for PortConfiguration CR
 	PortConfigurationRef PortConfigurationRef `json:"portConfigurationRef"`
-	PortID               string               `json:"portID"`
-	DeviceRef            DeviceRef            `json:"deviceRef"`
-	SmartNic             bool                 `json:"smartNic"`
+	// Describes the port number on the device
+	PortID string `json:"portID"`
+	// Reference for Device CR
+	DeviceRef DeviceRef `json:"deviceRef"`
+	// ????
+	SmartNic bool `json:"smartNic"`
 }
 
 // PortConfigurationRef is the reference for PortConfiguration CR
@@ -119,7 +125,7 @@ func (ref *DeviceRef) Fetch(ctx context.Context, client client.Client) (instance
 	return
 }
 
-// VLANID ...
+// VLANID is a 12-bit 802.1Q VLAN identifier
 type VLANID int32
 
 // VLAN represents the name and ID of a VLAN
@@ -131,9 +137,12 @@ type VLAN struct {
 
 // PortStatus defines the observed state of Port
 type PortStatus struct {
-	State                StateType            `json:"state,omitempty"`
+	// The current configuration status of the port
+	State StateType `json:"state,omitempty"`
+	// The current portConfiguration of the port
 	PortConfigurationRef PortConfigurationRef `json:"portConfigurationRef"`
-	VLANs                []VLAN               `json:"vlans"`
+	// VLAN information to which the port belongs
+	VLANs []VLAN `json:"vlans"`
 }
 
 const (
@@ -156,12 +165,12 @@ const (
 	PortDeleted StateType = "Deleted"
 )
 
-// GetState ...
+// GetState gets the current state of the port
 func (n *Port) GetState() StateType {
 	return n.Status.State
 }
 
-// SetState ...
+// SetState sets the state of the port
 func (n *Port) SetState(state StateType) {
 	n.Status.State = state
 }

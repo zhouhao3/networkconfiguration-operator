@@ -37,7 +37,7 @@ spec:
             description: PortSpec defines the desired state of Port
             properties:
               deviceRef:
-                description: DeviceRef is the reference for Device CR
+                description: Reference for Device CR
                 properties:
                   kind:
                     enum:
@@ -53,8 +53,7 @@ spec:
                 - nameSpace
                 type: object
               portConfigurationRef:
-                description: PortConfigurationRef is the reference for PortConfiguration
-                  CR
+                description: Reference for PortConfiguration CR
                 properties:
                   kind:
                     type: string
@@ -68,8 +67,10 @@ spec:
                 - nameSpace
                 type: object
               portID:
+                description: Describes the port number on the device
                 type: string
               smartNic:
+                description: ????
                 type: boolean
             required:
             - deviceRef
@@ -81,8 +82,7 @@ spec:
             description: PortStatus defines the observed state of Port
             properties:
               portConfigurationRef:
-                description: PortConfigurationRef is the reference for PortConfiguration
-                  CR
+                description: The current portConfiguration of the port
                 properties:
                   kind:
                     type: string
@@ -96,14 +96,15 @@ spec:
                 - nameSpace
                 type: object
               state:
-                description: StateType is the type of .status.state
+                description: The current configuration status of the port
                 type: string
               vlans:
+                description: VLAN information to which the port belongs
                 items:
                   description: VLAN represents the name and ID of a VLAN
                   properties:
                     id:
-                      description: VLANID ...
+                      description: VLANID is a 12-bit 802.1Q VLAN identifier
                       format: int32
                       type: integer
                     name:
