@@ -64,4 +64,7 @@ type Device interface {
 
 	// PortState return the port's state of the device
 	PortState(ctx context.Context, portID string) PortState
+
+	// CheckPortConfigutation checks whether the configuration is configured on the port
+	CheckPortConfigutation(ctx context.Context, configuration interface{}, portID string) bool
 }
