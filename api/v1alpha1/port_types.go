@@ -28,10 +28,12 @@ import (
 // StateType is the type of .status.state
 type StateType string
 
-// NicHint ...
+// NicHint describes the requirements for the network card
 type NicHint struct {
-	Name     string `json:"name"`
-	SmartNic bool   `json:"smartNic"`
+	// The name of the network card for this NicHint
+	Name string `json:"name"`
+	// True if smart network card is required, false otherwise.
+	SmartNic bool `json:"smartNic"`
 }
 
 // PortRef is the reference for NetworkBinding CR
