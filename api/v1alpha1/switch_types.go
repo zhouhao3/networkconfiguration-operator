@@ -21,8 +21,31 @@ import (
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
 )
 
-func init() {
-	SchemeBuilder.Register(&Switch{}, &SwitchList{})
+// SwitchSpec defines the desired state of Switch
+type SwitchSpec struct {
+	OS     string                  `json:"os"`
+	IP     string                  `json:"ip"`
+	MAC    string                  `json:"mac,omitempty"`
+	Secret *corev1.SecretReference `json:"secret"`
+	Ports  []SwitchSpecPort        `json:"ports,omitempty"`
+}
+
+// SwitchSpecPort ...
+type SwitchSpecPort struct {
+	PortID string `json:"portID,omitempty"`
+
+	Disabled bool `json:"disabled,omitempty"`
+
+	TrunkDisabled bool `json:"trunkDisable,omitempty"`
+
+	// +kubebuilder:validation:Pattern=`([0-9]{1,})|([0-9]{1,}-[0-9]{1,})(,([0-9]{1,})|([0-9]{1,}-[0-9]{1,}))*`
+	VlanRange string `json:"vlanRange,omitempty"`
+}
+
+// SwitchStatus defines the observed state of Switch
+type SwitchStatus struct {
+	// INSERT ADDITIONAL STATUS FIELD - define observed state of cluster
+	// Important: Run "make" to regenerate code after modifying this file
 }
 
 // +kubebuilder:object:root=true
@@ -45,29 +68,6 @@ type Switch struct {
 	Status SwitchStatus `json:"status,omitempty"`
 }
 
-// SwitchSpec defines the desired state of Switch
-type SwitchSpec struct {
-	OS     string                  `json:"os"`
-	IP     string                  `json:"ip"`
-	MAC    string                  `json:"mac"`
-	Secret *corev1.SecretReference `json:"secret"`
-	Ports  []SwitchSpecPort        `json:"ports,omitempty"`
-}
-
-// SwitchSpecPort ...
-type SwitchSpecPort struct {
-	PortID string `json:"portID,omitempty"`
-
-	Disabled bool `json:"disabled,omitempty"`
-
-	TrunkDisabled bool `json:"trunkDisable,omitempty"`
-
-	// +kubebuilder:validation:Pattern=`([0-9]{1,})|([0-9]{1,}-[0-9]{1,})(,([0-9]{1,})|([0-9]{1,}-[0-9]{1,}))*`
-	VlanRange string `json:"vlanRange,omitempty"`
-}
-
-// SwitchStatus defines the observed state of Switch
-type SwitchStatus struct {
-	// INSERT ADDITIONAL STATUS FIELD - define observed state of cluster
-	// Important: Run "make" to regenerate code after modifying this file
+func init() {
+	SchemeBuilder.Register(&Switch{}, &SwitchList{})
 }

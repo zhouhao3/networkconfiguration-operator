@@ -72,7 +72,6 @@ spec:
                 type: object
             required:
             - ip
-            - mac
             - os
             - secret
             type: object

@@ -52,15 +52,11 @@ spec:
                 - name
                 - nameSpace
                 type: object
-              lagWith:
-                type: string
               portConfigurationRef:
-                description: PortConfigurationRef is the reference for NetworkConfiguration
+                description: PortConfigurationRef is the reference for PortConfiguration
                   CR
                 properties:
                   kind:
-                    enum:
-                    - SwitchPortConfiguration
                     type: string
                   name:
                     type: string
@@ -73,17 +69,52 @@ spec:
                 type: object
               portID:
                 type: string
+              smartNic:
+                type: boolean
             required:
             - deviceRef
             - portConfigurationRef
             - portID
+            - smartNic
             type: object
           status:
             description: PortStatus defines the observed state of Port
             properties:
+              portConfigurationRef:
+                description: PortConfigurationRef is the reference for PortConfiguration
+                  CR
+                properties:
+                  kind:
+                    type: string
+                  name:
+                    type: string
+                  nameSpace:
+                    type: string
+                required:
+                - kind
+                - name
+                - nameSpace
+                type: object
               state:
                 description: StateType is the type of .status.state
                 type: string
+              vlans:
+                items:
+                  description: VLAN represents the name and ID of a VLAN
+                  properties:
+                    id:
+                      description: VLANID ...
+                      format: int32
+                      type: integer
+                    name:
+                      type: string
+                  required:
+                  - id
+                  type: object
+                type: array
+            required:
+            - portConfigurationRef
+            - vlans
             type: object
         type: object
     served: true

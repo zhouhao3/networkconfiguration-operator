@@ -20,42 +20,16 @@ import (
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
 )
 
-func init() {
-	SchemeBuilder.Register(&SwitchPortConfiguration{}, &SwitchPortConfigurationList{})
-}
-
-// +kubebuilder:object:root=true
-
-// SwitchPortConfiguration is the Schema for the switchportconfigurations API
-type SwitchPortConfiguration struct {
-	metav1.TypeMeta   `json:",inline"`
-	metav1.ObjectMeta `json:"metadata,omitempty"`
-
-	Spec   SwitchPortConfigurationSpec   `json:"spec,omitempty"`
-	Status SwitchPortConfigurationStatus `json:"status,omitempty"`
-}
-
-// +kubebuilder:object:root=true
-
-// SwitchPortConfigurationList contains a list of SwitchPortConfiguration
-type SwitchPortConfigurationList struct {
-	metav1.TypeMeta `json:",inline"`
-	metav1.ListMeta `json:"metadata,omitempty"`
-	Items           []SwitchPortConfiguration `json:"items"`
-}
-
 // SwitchPortConfigurationSpec defines the desired state of SwitchPortConfiguration
 type SwitchPortConfigurationSpec struct {
 	// +kubebuilder:validation:MaxItems=10
 	ACLs []ACL `json:"acls,omitempty"`
 
 	// +kubebuilder:validation:MaxItems=3
-	Vlans []string `json:"vlans,omitempty"`
-
-	UntaggedVLAN string `json:"untaggedVLAN,omitempty"`
-
-	// +kubebuilder:validation:Enum="lag";"mlag"
-	LinkAggregationType string `json:"linkAggregationType,omitempty"`
+	Vlans []VLAN `json:"vlans,omitempty"`
+	// The untagged VLAN ID
+	VLANID VLANID `json:"vlanId,omitempty"`
+	Trunk  bool   `json:"trunk,omitempty"`
 }
 
 // ACL ...
@@ -82,6 +56,29 @@ type ACL struct {
 
 // SwitchPortConfigurationStatus defines the observed state of SwitchPortConfiguration
 type SwitchPortConfigurationStatus struct {
-	// INSERT ADDITIONAL STATUS FIELD - define observed state of cluster
-	// Important: Run "make" to regenerate code after modifying this file
+	PortRefs []PortRef `json:"portRefs"`
+}
+
+// +kubebuilder:object:root=true
+
+// SwitchPortConfiguration is the Schema for the switchportconfigurations API
+type SwitchPortConfiguration struct {
+	metav1.TypeMeta   `json:",inline"`
+	metav1.ObjectMeta `json:"metadata,omitempty"`
+
+	Spec   SwitchPortConfigurationSpec   `json:"spec,omitempty"`
+	Status SwitchPortConfigurationStatus `json:"status,omitempty"`
+}
+
+// +kubebuilder:object:root=true
+
+// SwitchPortConfigurationList contains a list of SwitchPortConfiguration
+type SwitchPortConfigurationList struct {
+	metav1.TypeMeta `json:",inline"`
+	metav1.ListMeta `json:"metadata,omitempty"`
+	Items           []SwitchPortConfiguration `json:"items"`
+}
+
+func init() {
+	SchemeBuilder.Register(&SwitchPortConfiguration{}, &SwitchPortConfigurationList{})
 }
