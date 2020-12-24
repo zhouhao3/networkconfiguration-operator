@@ -40,7 +40,7 @@ spec:
             properties:
               acls:
                 items:
-                  description: ACL ...
+                  description: ACL describes the rules applied in the switch
                   properties:
                     action:
                       enum:
@@ -73,6 +73,7 @@ spec:
                 maxItems: 10
                 type: array
               trunk:
+                description: True if it is to be set to trunk port, false otherwise.
                 type: boolean
               vlanId:
                 description: The untagged VLAN ID
@@ -83,7 +84,7 @@ spec:
                   description: VLAN represents the name and ID of a VLAN
                   properties:
                     id:
-                      description: VLANID ...
+                      description: VLANID is a 12-bit 802.1Q VLAN identifier
                       format: int32
                       type: integer
                     name:
@@ -100,7 +101,7 @@ spec:
             properties:
               portRefs:
                 items:
-                  description: PortRef is the reference for NetworkBinding CR
+                  description: PortRef is the reference for Port CR
                   properties:
                     name:
                       type: string

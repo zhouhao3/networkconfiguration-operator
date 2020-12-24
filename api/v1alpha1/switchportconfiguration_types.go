@@ -24,15 +24,15 @@ import (
 type SwitchPortConfigurationSpec struct {
 	// +kubebuilder:validation:MaxItems=10
 	ACLs []ACL `json:"acls,omitempty"`
-
 	// +kubebuilder:validation:MaxItems=3
 	Vlans []VLAN `json:"vlans,omitempty"`
 	// The untagged VLAN ID
 	VLANID VLANID `json:"vlanId,omitempty"`
-	Trunk  bool   `json:"trunk,omitempty"`
+	// True if it is to be set to trunk port, false otherwise.
+	Trunk bool `json:"trunk,omitempty"`
 }
 
-// ACL ...
+// ACL describes the rules applied in the switch
 type ACL struct {
 	// +kubebuilder:validation:Enum="ipv4";"ipv6"
 	Type string `json:"type,omitempty"`
