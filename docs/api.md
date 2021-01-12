@@ -2,26 +2,50 @@
 
 ## Port
 
+**Port** CR represents a specific port of a network device, including port information,
+the performance of the network device to which it belongs, and the performance of
+the connected network interface card.
+
 ### Port Spec
 
-### Port Status
+The *Port Spec* defines the port on which network device and what configuration should be configured.
 
 #### portID
 
+The `portID` field is the port's ID on network device, it may look like `interface 0/14`.
+
 #### portConfigurationRef
+
+A reference to define which configuration should be configured.
 
 #### deviceRef
 
-#### smartNic
+A reference to define this port on which network device.
 
+#### smartNIC
+
+<!-- TODO -->
 
 ### Port Status
 
 #### state
 
+The `state` shows the progress of configuring the network.
+
+* *\<empty string\>* -- means we haven't do any thing.
+* *Created* -- Means the port can be configured.
+* *Configuring* -- Means we are configuring configuration for the port.
+* *Configured* -- Means the port have been configured, you can use it now.
+* *deleting* -- Means we are removing configuration from the port.
+* *deleted* -- Means now configuration of the port have been removed.
+
 #### configurationRef
 
+<!-- TODO -->
+
 #### vlans
+
+Show the port in which vlans.
 
 ### Port Example
 
@@ -40,7 +64,7 @@ spec:
     name: switch0
     kind: Switch
     namespace: default
-  smrtNic: false
+  smartNIC: false
 
 status:
   state:
@@ -49,14 +73,46 @@ status:
     namespace:
   vlans:
   - id: 2
-    name: 
-  - 3
+    name:
+  - id: 3
+    name:
   .....
 ```
 
 ## SwitchPortConfiguration
 
+The **SwitchPortConfiguration** is a kind configure for port on switch.
+
 ### SwitchPortConfiguration Spec
+
+The *SwitchPortConfiguration Spec* defines details of configuration.
+
+#### acl
+
+The `acl` defines access control list of switch's port.
+
+The sub-fields are
+
+<!-- TODO -->
+* *type* --
+* *action* --
+* *protocol* --
+* *src* --
+* *srcPortRange* --
+* *des* --
+* *desPortRange* --
+
+#### trunk
+
+<!-- TODO -->
+
+#### untaggedVLAN
+
+<!-- TODO -->
+
+#### vlans
+
+The `vlans` define port that use the configure should be configured to which vlans.
 
 ### SwitchPortConfiguration Example
 
@@ -87,17 +143,38 @@ spec:
 
 ## Switch
 
-The fields are:
+The **Switch** describes a switch.
 
-* **os** --
+### Switch spec
 
-* **ip** --
+The `spec` contains the connection information for the switch.
 
-* **port** --
+#### os
 
-* **secret** --
+The `os` is operator system of switch.
 
-* **restrictedPorts** --
+#### ip
+
+The `ip` is ipv4 address of the switch.
+
+#### port
+
+The `port` is which port we can `ssh` to the switch.
+
+#### secret
+
+The `secret` is a secret resource contains username and password for the switch.
+
+#### restrictedPorts
+
+The `restrictedPorts` an restrict the use of ports on the switch.
+
+The sub-fields are
+
+* *portID* -- The port's ID on the switch.
+* *disabled* -- The port can't be used or not.
+* *vlanRange* -- The port can be divided into which vlans.
+* *trunkDisable* -- The port can't be set to trunk port or not.
 
 ### Switch Example
 ```yaml
@@ -118,9 +195,6 @@ spec:
       disabled: false
       vlanRange: 1, 6-10
       trunkDisable: false
-```
-
-```yaml
 ---
 apiVersion: v1
 kind: Secret
