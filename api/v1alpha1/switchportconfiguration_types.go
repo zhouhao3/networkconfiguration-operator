@@ -56,7 +56,6 @@ type ACL struct {
 
 // SwitchPortConfigurationStatus defines the observed state of SwitchPortConfiguration
 type SwitchPortConfigurationStatus struct {
-	PortRefs []PortRef `json:"portRefs"`
 }
 
 // +kubebuilder:object:root=true

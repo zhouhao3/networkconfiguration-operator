@@ -38,8 +38,9 @@ type NicHint struct {
 
 // PortRef is the reference for Port CR
 type PortRef struct {
-	Name      string `json:"name"`
-	NameSpace string `json:"nameSpace"`
+	Name        string `json:"name"`
+	NameSpace   string `json:"nameSpace"`
+	APIVersions string `json:"apiVersions"`
 }
 
 // Fetch the instance
