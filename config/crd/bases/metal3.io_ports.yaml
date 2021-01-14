@@ -37,7 +37,7 @@ spec:
             description: PortSpec defines the desired state of Port
             properties:
               deviceRef:
-                description: Reference for Device CR
+                description: Reference for Device CR.
                 properties:
                   kind:
                     enum:
@@ -45,77 +45,64 @@ spec:
                     type: string
                   name:
                     type: string
-                  nameSpace:
+                  namespace:
+                    default: default
+                    description: If empty use default namespace.
                     type: string
                 required:
                 - kind
                 - name
-                - nameSpace
                 type: object
               portConfigurationRef:
-                description: Reference for PortConfiguration CR
+                description: Reference for PortConfiguration CR.
                 properties:
                   kind:
+                    enum:
+                    - SwitchPortConfiguration
                     type: string
                   name:
                     type: string
-                  nameSpace:
+                  namespace:
+                    default: default
+                    description: If empty use default namespace.
                     type: string
                 required:
                 - kind
                 - name
-                - nameSpace
                 type: object
               portID:
-                description: Describes the port number on the device
+                description: Describes the port number on the device.
                 type: string
-              smartNic:
-                description: ????
-                type: boolean
             required:
             - deviceRef
             - portConfigurationRef
             - portID
-            - smartNic
             type: object
           status:
             description: PortStatus defines the observed state of Port
             properties:
               portConfigurationRef:
-                description: The current portConfiguration of the port
+                description: The current portConfiguration of the port.
                 properties:
                   kind:
+                    enum:
+                    - SwitchPortConfiguration
                     type: string
                   name:
                     type: string
-                  nameSpace:
+                  namespace:
+                    default: default
+                    description: If empty use default namespace.
                     type: string
                 required:
                 - kind
                 - name
-                - nameSpace
                 type: object
               state:
-                description: The current configuration status of the port
+                description: The current configuration status of the port.
                 type: string
-              vlans:
-                description: VLAN information to which the port belongs
-                items:
-                  description: VLAN represents the name and ID of a VLAN
-                  properties:
-                    id:
-                      description: VLANID is a 12-bit 802.1Q VLAN identifier
-                      format: int32
-                      type: integer
-                    name:
-                      type: string
-                  required:
-                  - id
-                  type: object
-                type: array
             required:
             - portConfigurationRef
-            - vlans
             type: object
         type: object
     served: true

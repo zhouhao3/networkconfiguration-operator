@@ -20,16 +20,26 @@ import (
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
 )
 
+// VLANID is a 12-bit 802.1Q VLAN identifier
+type VLANID int32
+
+// VLAN represents the name and ID of a VLAN
+type VLAN struct {
+	ID   VLANID `json:"id"`
+	Name string `json:"name,omitempty"`
+}
+
 // SwitchPortConfigurationSpec defines the desired state of SwitchPortConfiguration
 type SwitchPortConfigurationSpec struct {
 	// +kubebuilder:validation:MaxItems=10
 	ACLs []ACL `json:"acls,omitempty"`
-	// +kubebuilder:validation:MaxItems=3
+
 	Vlans []VLAN `json:"vlans,omitempty"`
-	// The untagged VLAN ID
-	VLANID VLANID `json:"vlanId,omitempty"`
-	// True if it is to be set to trunk port, false otherwise.
-	Trunk bool `json:"trunk,omitempty"`
+
+	// Indicates which mode this port should be set to, valid values are access, trunk or hybrid.
+	// If empty default value is access
+	// +kubebuilder:default:="access"
+	Type string `json:"type,omitempty"`
 }
 
 // ACL describes the rules applied in the switch

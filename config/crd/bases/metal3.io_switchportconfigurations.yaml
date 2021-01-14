@@ -72,13 +72,11 @@ spec:
                   type: object
                 maxItems: 10
                 type: array
-              trunk:
-                description: True if it is to be set to trunk port, false otherwise.
-                type: boolean
-              vlanId:
-                description: The untagged VLAN ID
-                format: int32
-                type: integer
+              type:
+                default: access
+                description: Indicates which mode this port should be set to, valid
+                  values are access, trunk or hybrid. If empty default value is access
+                type: string
               vlans:
                 items:
                   description: VLAN represents the name and ID of a VLAN
@@ -92,28 +90,11 @@ spec:
                   required:
                   - id
                   type: object
-                maxItems: 3
                 type: array
             type: object
           status:
             description: SwitchPortConfigurationStatus defines the observed state
               of SwitchPortConfiguration
-            properties:
-              portRefs:
-                items:
-                  description: PortRef is the reference for Port CR
-                  properties:
-                    name:
-                      type: string
-                    nameSpace:
-                      type: string
-                  required:
-                  - name
-                  - nameSpace
-                  type: object
-                type: array
-            required:
-            - portRefs
             type: object
         type: object
     served: true

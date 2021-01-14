@@ -90,7 +90,7 @@ func (r *PortReconciler) Reconcile(req ctrl.Request) (result ctrl.Result, err er
 		}
 
 	// On object updated
-	case instance.DeletionTimestamp.IsZero() && len(instance.Finalizers) != 0:
+	case instance.DeletionTimestamp.IsZero():
 		// Reconcile state
 		result, merr = m.Reconcile(context.TODO())
 		if merr != nil {

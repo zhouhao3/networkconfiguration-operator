@@ -87,9 +87,12 @@ func (r *PortReconciler) configuringHandler(ctx context.Context, info *machine.I
 
 // configuredHandler will be called when the user want to delete the network configuration for the port be configured
 func (r *PortReconciler) configuredHandler(ctx context.Context, info *machine.Information, instance interface{}) (v1alpha1.StateType, ctrl.Result, error) {
-	_ = instance.(*v1alpha1.Port)
+	i := instance.(*v1alpha1.Port)
 
-	// `Configured` state just show user: this port has been configured
+	// Reconfigure port when user update CR.
+	if i.DeletionTimestamp.IsZero() {
+		return v1alpha1.PortConfiguring, ctrl.Result{Requeue: true}, nil
+	}
 
 	return v1alpha1.PortDeleting, ctrl.Result{Requeue: true}, nil
 }
