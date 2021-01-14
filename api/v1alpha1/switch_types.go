@@ -25,12 +25,16 @@ import (
 type SwitchSpec struct {
 	// The type of OS this switch runs
 	OS string `json:"os"`
+
 	// Port to use for SSH connection
 	Port int32 `json:"port,omitempty"`
+
 	// IP Address of the switch
 	IP string `json:"ip"`
+
 	// The secret containing the switch credentials
 	Secret *corev1.SecretReference `json:"secret"`
+
 	// Restricted ports in the switch
 	RestrictedPorts []RestrictedPort `json:"restrictedPorts,omitempty"`
 }
@@ -39,10 +43,13 @@ type SwitchSpec struct {
 type RestrictedPort struct {
 	// Describes the port number on the device
 	PortID string `json:"portID,omitempty"`
+
 	// True if this port is not available, false otherwise
 	Disabled bool `json:"disabled,omitempty"`
+
 	// True if this port can be used as a trunk port, false otherwise
 	TrunkDisabled bool `json:"trunkDisable,omitempty"`
+
 	// Indicates the range of VLANs allowed by this port in the switch
 	// +kubebuilder:validation:Pattern=`([0-9]{1,})|([0-9]{1,}-[0-9]{1,})(,([0-9]{1,})|([0-9]{1,}-[0-9]{1,}))*`
 	VlanRange string `json:"vlanRange,omitempty"`

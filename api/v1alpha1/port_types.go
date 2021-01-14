@@ -30,16 +30,21 @@ type StateType string
 
 // NicHint describes the requirements for the network card
 type NicHint struct {
-	// The name of the network card for this NicHint
+	// The name of the network card for this NicHint.
 	Name string `json:"name"`
+
 	// True if smart network card is required, false otherwise.
 	SmartNic bool `json:"smartNic"`
 }
 
 // PortRef is the reference for Port CR
 type PortRef struct {
-	Name        string `json:"name"`
-	NameSpace   string `json:"nameSpace"`
+	Name string `json:"name"`
+
+	// If empty use default namespace.
+	// +kubebuilder:default:="default"
+	NameSpace string `json:"namespace,omitempty"`
+
 	APIVersions string `json:"apiVersions"`
 }
 
@@ -59,22 +64,25 @@ func (ref *PortRef) Fetch(ctx context.Context, client client.Client) (instance *
 
 // PortSpec defines the desired state of Port
 type PortSpec struct {
-	// Reference for PortConfiguration CR
+	// Reference for PortConfiguration CR.
 	PortConfigurationRef PortConfigurationRef `json:"portConfigurationRef"`
-	// Describes the port number on the device
+
+	// Describes the port number on the device.
 	PortID string `json:"portID"`
-	// Reference for Device CR
+
+	// Reference for Device CR.
 	DeviceRef DeviceRef `json:"deviceRef"`
-	// ????
-	SmartNic bool `json:"smartNic"`
 }
 
 // PortConfigurationRef is the reference for PortConfiguration CR
 type PortConfigurationRef struct {
 	Name string `json:"name"`
 
-	NameSpace string `json:"nameSpace"`
+	// If empty use default namespace.
+	// +kubebuilder:default:="default"
+	NameSpace string `json:"namespace,omitempty"`
 
+	// +kubebuilder:validation:Enum="SwitchPortConfiguration"
 	Kind string `json:"kind"`
 }
 
@@ -101,7 +109,9 @@ func (ref *PortConfigurationRef) Fetch(ctx context.Context, client client.Client
 type DeviceRef struct {
 	Name string `json:"name"`
 
-	NameSpace string `json:"nameSpace"`
+	// If empty use default namespace.
+	// +kubebuilder:default:="default"
+	NameSpace string `json:"namespace,omitempty"`
 
 	// +kubebuilder:validation:Enum="Switch"
 	Kind string `json:"kind"`
@@ -126,43 +136,32 @@ func (ref *DeviceRef) Fetch(ctx context.Context, client client.Client) (instance
 	return
 }
 
-// VLANID is a 12-bit 802.1Q VLAN identifier
-type VLANID int32
-
-// VLAN represents the name and ID of a VLAN
-type VLAN struct {
-	ID VLANID `json:"id"`
-
-	Name string `json:"name,omitempty"`
-}
-
 // PortStatus defines the observed state of Port
 type PortStatus struct {
-	// The current configuration status of the port
+	// The current configuration status of the port.
 	State StateType `json:"state,omitempty"`
-	// The current portConfiguration of the port
+
+	// The current portConfiguration of the port.
 	PortConfigurationRef PortConfigurationRef `json:"portConfigurationRef"`
-	// VLAN information to which the port belongs
-	VLANs []VLAN `json:"vlans"`
 }
 
 const (
-	// PortNone ...
+	// PortNone means the port can be configured.
 	PortNone StateType = ""
 
-	// PortCreating ...
+	// PortCreating means we are configuring configuration for the port.
 	PortCreating StateType = "Creating"
 
-	// PortConfiguring ...
+	// PortConfiguring means we are removing configuration from the port.
 	PortConfiguring StateType = "Configuring"
 
-	// PortConfigured ...
+	// PortConfigured means the port have been configured, you can use it now.
 	PortConfigured StateType = "Configured"
 
-	// PortDeleting ...
+	// PortDeleting means the port have been configured, you can use it now.
 	PortDeleting StateType = "Deleting"
 
-	// PortDeleted ...
+	// PortDeleted means now configuration of the port have been removed.
 	PortDeleted StateType = "Deleted"
 )
 

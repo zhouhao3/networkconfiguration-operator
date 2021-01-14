@@ -22,10 +22,6 @@ A reference to define which configuration should be configured.
 
 A reference to define this port on which network device.
 
-#### smartNIC
-
-<!-- TODO -->
-
 ### Port Status
 
 #### state
@@ -43,16 +39,15 @@ The `state` shows the progress of configuring the network.
 
 <!-- TODO -->
 
-#### vlans
-
-Show the port in which vlans.
-
 ### Port Example
 
 ```yaml
 metaData:
-  name:
+  name: port0
   ownerRef:
+    name: bm0
+    kind: BareMetalHost
+    namespace: default
   finalizers:
 spec:
   portID: 0
@@ -64,19 +59,12 @@ spec:
     name: switch0
     kind: Switch
     namespace: default
-  smartNIC: false
-
 status:
-  state:
+  state: Configured
   configurationRef:
-    name:
-    namespace:
-  vlans:
-  - id: 2
-    name:
-  - id: 3
-    name:
-  .....
+    name: sc1
+    kind: SwitchPortConfiguration
+    namespace: default
 ```
 
 ## SwitchPortConfiguration
@@ -102,13 +90,10 @@ The sub-fields are
 * *des* --
 * *desPortRange* --
 
-#### trunk
+#### type
 
-<!-- TODO -->
-
-#### untaggedVLAN
-
-<!-- TODO -->
+Indicates which mode this port should be set to. Valid values are *access*, *trunk* or *hybrid*,
+ default value is *access*.
 
 #### vlans
 
@@ -132,14 +117,11 @@ spec:
       srcPortRange: // 22, 22-30
       des: // xxx.xxx.xxx.xxx/xx
       desPortRange: // 22, 22-30
-  trunk:
-  untaggedVLAN:
+  type: accesss
   vlans:
-    - id:
-    - id:
+    - id: 2
+    - id: 3
 ```
-
-
 
 ## Switch
 
