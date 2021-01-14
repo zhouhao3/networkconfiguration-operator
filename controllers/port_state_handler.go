@@ -49,7 +49,7 @@ func (r *PortReconciler) creatingHandler(ctx context.Context, info *machine.Info
 		// Just wait
 
 	default:
-		return v1alpha1.PortCreating, ctrl.Result{Requeue: true, RequeueAfter: time.Second * 10}, fmt.Errorf("port(%s) have been used", i.Spec.PortID)
+		return v1alpha1.PortDeleted, ctrl.Result{Requeue: true, RequeueAfter: time.Second * 10}, fmt.Errorf("port(%s) have been used", i.Spec.PortID)
 	}
 
 	return v1alpha1.PortCreating, ctrl.Result{Requeue: true, RequeueAfter: time.Second * 10}, nil
@@ -65,10 +65,6 @@ func (r *PortReconciler) configuringHandler(ctx context.Context, info *machine.I
 	}
 
 	switch dev.PortState(ctx, i.Spec.PortID) {
-	case device.Configured:
-		// If configure network success, we just need to set next state to `Configured`, but not Reconcile
-		return v1alpha1.PortConfigured, ctrl.Result{Requeue: false}, nil
-
 	case device.None, device.Deleted, device.ConfigureFailed:
 		// Fetch network configuration
 		configuration, err := i.Spec.PortConfigurationRef.Fetch(ctx, info.Client)
@@ -77,6 +73,10 @@ func (r *PortReconciler) configuringHandler(ctx context.Context, info *machine.I
 		}
 		// Configure network
 		err = dev.ConfigurePort(ctx, configuration, i.Spec.PortID)
+
+	case device.Configured:
+		// If configure network success, we just need to set next state to `Configured`, but not reconcile
+		return v1alpha1.PortConfigured, ctrl.Result{Requeue: false}, nil
 
 	default:
 		// Just wait
@@ -89,11 +89,12 @@ func (r *PortReconciler) configuringHandler(ctx context.Context, info *machine.I
 func (r *PortReconciler) configuredHandler(ctx context.Context, info *machine.Information, instance interface{}) (v1alpha1.StateType, ctrl.Result, error) {
 	i := instance.(*v1alpha1.Port)
 
-	// Reconfigure port when user update CR.
+	// User update CR
 	if i.DeletionTimestamp.IsZero() {
 		return v1alpha1.PortConfiguring, ctrl.Result{Requeue: true}, nil
 	}
 
+	// User delete CR
 	return v1alpha1.PortDeleting, ctrl.Result{Requeue: true}, nil
 }
 
@@ -107,12 +108,12 @@ func (r *PortReconciler) deletingHandler(ctx context.Context, info *machine.Info
 	}
 
 	switch dev.PortState(ctx, i.Spec.PortID) {
-	case device.None, device.Deleted:
-		return v1alpha1.PortDeleted, ctrl.Result{Requeue: true}, nil
-
 	case device.Configured, device.ConfigureFailed, device.DeleteFailed:
 		// Delete network
 		err = dev.DeConfigurePort(ctx, i.Spec.PortID)
+
+	case device.None, device.Deleted:
+		return v1alpha1.PortDeleted, ctrl.Result{Requeue: true}, nil
 
 	default:
 		// Just wait

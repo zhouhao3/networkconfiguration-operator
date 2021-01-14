@@ -1,6 +1,5 @@
 KUSTOMIZE=./tools/kustomize
 CONTROLLER_GEN=./tools/controller-gen
-DOT= ./tools/dot
 
 # Image URL to use all building/pushing image targets
 IMG ?= controller:latest
@@ -51,12 +50,10 @@ generate:
 manifests:
 	$(CONTROLLER_GEN) $(CRD_OPTIONS) rbac:roleName=manager-role webhook paths="./..." output:crd:artifacts:config=config/crd/bases
 
-# Generate docs e.g. .dot.
+# Generate docs
 .PHONY: docs
-docs: $(patsubst %.dot,%.png,$(wildcard docs/*.dot))
-
-%.png: %.dot
-	$(DOT) -Tpng $< >$@
+docs:
+	./tools/plantuml docs/*.plantuml
 
 # Run tests
 test: generate gofmt golint govet gosec unit manifests
