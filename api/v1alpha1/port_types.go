@@ -28,6 +28,12 @@ import (
 // StateType is the type of .status.state
 type StateType string
 
+// NetworkConfiguration specify the network configuration that metal3Machine needs to use
+type NetworkConfiguration struct {
+	ConfigurationRefs []ConfigurationRef `json:"configurationRefs"`
+	NicHint           NicHint            `json:"nicHint"`
+}
+
 // NicHint describes the requirements for the network card
 type NicHint struct {
 	// The name of the network card for this NicHint.
@@ -65,17 +71,18 @@ func (ref *PortRef) Fetch(ctx context.Context, client client.Client) (instance *
 // PortSpec defines the desired state of Port
 type PortSpec struct {
 	// Reference for PortConfiguration CR.
-	PortConfigurationRef PortConfigurationRef `json:"portConfigurationRef"`
+	ConfigurationRef ConfigurationRef `json:"portConfigurationRef"`
 
 	// Describes the port number on the device.
-	PortID string `json:"portID"`
+	ID string `json:"id"`
 
-	// Reference for Device CR.
-	DeviceRef DeviceRef `json:"deviceRef"`
+	// Reference for Port CR.
+	// Represents the next port information of this port link
+	NextRef PortRef `json:"nextRef,omitempty"`
 }
 
-// PortConfigurationRef is the reference for PortConfiguration CR
-type PortConfigurationRef struct {
+// ConfigurationRef is the reference for Configuration CR
+type ConfigurationRef struct {
 	Name string `json:"name"`
 
 	// If empty use default namespace.
@@ -87,7 +94,7 @@ type PortConfigurationRef struct {
 }
 
 // Fetch the instance
-func (ref *PortConfigurationRef) Fetch(ctx context.Context, client client.Client) (instance interface{}, err error) {
+func (ref *ConfigurationRef) Fetch(ctx context.Context, client client.Client) (instance interface{}, err error) {
 	switch ref.Kind {
 	case "SwitchPortConfiguration":
 		switchPortConfiguration := &SwitchPortConfiguration{}
@@ -143,8 +150,8 @@ type PortStatus struct {
 	// The current configuration status of the port.
 	State StateType `json:"state,omitempty"`
 
-	// The current portConfiguration of the port.
-	PortConfigurationRef PortConfigurationRef `json:"portConfigurationRef"`
+	// The current Configuration of the port.
+	ConfigurationRef ConfigurationRef `json:"ConfigurationRef"`
 }
 
 const (
