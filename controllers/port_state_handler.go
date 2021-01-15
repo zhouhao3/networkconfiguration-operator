@@ -34,7 +34,7 @@ func (r *PortReconciler) creatingHandler(ctx context.Context, info *machine.Info
 	i := instance.(*v1alpha1.Port)
 
 	// Initialize device
-	dev, err := device.New(ctx, info.Client, &i.Spec.DeviceRef)
+	dev, err := device.New(ctx, info.Client, &i.OwnerReferences[0])
 	if err != nil {
 		return v1alpha1.PortCreating, ctrl.Result{Requeue: true, RequeueAfter: time.Second * 10}, err
 	}
@@ -59,7 +59,7 @@ func (r *PortReconciler) creatingHandler(ctx context.Context, info *machine.Info
 func (r *PortReconciler) configuringHandler(ctx context.Context, info *machine.Information, instance interface{}) (v1alpha1.StateType, ctrl.Result, error) {
 	i := instance.(*v1alpha1.Port)
 
-	dev, err := device.New(ctx, info.Client, &i.Spec.DeviceRef)
+	dev, err := device.New(ctx, info.Client, &i.OwnerReferences[0])
 	if err != nil {
 		return v1alpha1.PortConfiguring, ctrl.Result{Requeue: true, RequeueAfter: time.Second * 10}, err
 	}
@@ -102,7 +102,7 @@ func (r *PortReconciler) configuredHandler(ctx context.Context, info *machine.In
 func (r *PortReconciler) deletingHandler(ctx context.Context, info *machine.Information, instance interface{}) (v1alpha1.StateType, ctrl.Result, error) {
 	i := instance.(*v1alpha1.Port)
 
-	dev, err := device.New(ctx, info.Client, &i.Spec.DeviceRef)
+	dev, err := device.New(ctx, info.Client, &i.OwnerReferences[0])
 	if err != nil {
 		return v1alpha1.PortDeleting, ctrl.Result{Requeue: true, RequeueAfter: time.Second * 10}, err
 	}

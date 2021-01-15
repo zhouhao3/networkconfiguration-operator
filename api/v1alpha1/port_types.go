@@ -90,14 +90,16 @@ type PortConfigurationRef struct {
 func (ref *PortConfigurationRef) Fetch(ctx context.Context, client client.Client) (instance interface{}, err error) {
 	switch ref.Kind {
 	case "SwitchPortConfiguration":
+		switchPortConfiguration := &SwitchPortConfiguration{}
 		err = client.Get(
 			ctx,
 			types.NamespacedName{
 				Name:      ref.Name,
 				Namespace: ref.NameSpace,
 			},
-			instance.(*SwitchPortConfiguration),
+			switchPortConfiguration,
 		)
+		instance = switchPortConfiguration
 	default:
 		err = fmt.Errorf("no instance for the ref")
 	}
