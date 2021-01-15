@@ -36,12 +36,14 @@ spec:
           spec:
             description: PortSpec defines the desired state of Port
             properties:
-              deviceRef:
-                description: Reference for Device CR.
+              id:
+                description: Describes the port number on the device.
+                type: string
+              nextRef:
+                description: Reference for Port CR. Represents the next port information
+                  of this port link
                 properties:
-                  kind:
-                    enum:
-                    - Switch
+                  apiVersions:
                     type: string
                   name:
                     type: string
@@ -50,7 +52,7 @@ spec:
                     description: If empty use default namespace.
                     type: string
                 required:
-                - kind
+                - apiVersions
                 - name
                 type: object
               portConfigurationRef:
@@ -70,19 +72,16 @@ spec:
                 - kind
                 - name
                 type: object
-              portID:
-                description: Describes the port number on the device.
-                type: string
             required:
-            - deviceRef
+            - id
+            - nextRef
             - portConfigurationRef
-            - portID
             type: object
           status:
             description: PortStatus defines the observed state of Port
             properties:
-              portConfigurationRef:
-                description: The current portConfiguration of the port.
+              ConfigurationRef:
+                description: The current Configuration of the port.
                 properties:
                   kind:
                     enum:
@@ -102,7 +101,7 @@ spec:
                 description: The current configuration status of the port.
                 type: string
             required:
-            - portConfigurationRef
+            - ConfigurationRef
             type: object
         type: object
     served: true
