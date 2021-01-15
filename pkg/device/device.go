@@ -4,7 +4,7 @@ import (
 	"context"
 	"fmt"
 
-	"github.com/metal3-io/networkconfiguration-operator/api/v1alpha1"
+	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
 	"sigs.k8s.io/controller-runtime/pkg/client"
 )
 
@@ -35,7 +35,7 @@ const (
 )
 
 // New ...
-func New(ctx context.Context, client client.Client, deviceRef *v1alpha1.DeviceRef) (device Device, err error) {
+func New(ctx context.Context, client client.Client, deviceRef *metav1.OwnerReference) (device Device, err error) {
 	// Deal possible panic
 	defer func() {
 		err := recover()

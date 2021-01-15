@@ -18,6 +18,7 @@ package controllers
 
 import (
 	"context"
+	"fmt"
 
 	"github.com/go-logr/logr"
 	"k8s.io/apimachinery/pkg/runtime"
@@ -54,6 +55,10 @@ func (r *PortReconciler) Reconcile(req ctrl.Request) (result ctrl.Result, err er
 	if err != nil {
 		// Error reading the object - requeue the request
 		return reconcile.Result{}, err
+	}
+
+	if len(instance.OwnerReferences) == 0 {
+		return result, fmt.Errorf("The OwnerReferences of port mustn't be empty")
 	}
 
 	// Initialize state machine
